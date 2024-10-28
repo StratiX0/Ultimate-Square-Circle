@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        _player = Instantiate(playerPrefab, new Vector3(0, 0.5f, 0), Quaternion.identity);
+        _player = Instantiate(playerPrefab, new Vector3(0, -9.5f, 0), Quaternion.identity);
         playerScript = _player.GetComponent<Player>();
         timeText = GameObject.Find("Time Value").GetComponent<TextMeshProUGUI>();
     }
