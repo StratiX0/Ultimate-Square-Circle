@@ -4,7 +4,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private float time = 0;
-    public TextMeshProUGUI timeText;
+    private int death_number, win_number;
+    public TextMeshProUGUI timeText, Deaths, Wins;
     [SerializeField] GameObject playerPrefab;
     private GameObject _player;
     public Player playerScript;
@@ -26,6 +27,8 @@ public class GameManager : MonoBehaviour
         }
         CreatePlayer();
         timeText = GameObject.Find("Time Value").GetComponent<TextMeshProUGUI>();
+        Deaths = GameObject.Find("Death number").GetComponent<TextMeshProUGUI>();
+        Wins = GameObject.Find("Wins number").GetComponent<TextMeshProUGUI>();
     }
     
     void Start()
@@ -44,8 +47,26 @@ public class GameManager : MonoBehaviour
         
         if (_player != null && CheckDeath())
         {
-            playerScript.playerTransform.DetachChildren();
             Destroy(_player);
+        }
+
+        if (_player == null && CheckDeath())
+        {
+            CreatePlayer();
+            ResetTime();
+            UpdateDN();
+        }
+
+        if (_player != null && CheckFinish())
+        {
+            Destroy(_player);
+        }
+
+        if (_player == null && CheckFinish())
+        {
+            CreatePlayer();
+            ResetTime();
+            UpdateWin();
         }
     }
 
@@ -61,6 +82,26 @@ public class GameManager : MonoBehaviour
     {
         time += Time.deltaTime;
         timeText.text = time.ToString("F2");
+    }
+
+    // Reset the value of the variable time
+    public void ResetTime()
+    {
+        time = 0;
+    }
+
+    // Update the value of the variable death_number
+    public void UpdateDN()
+    {
+        death_number += 1;
+        Deaths.text = death_number.ToString("F0");
+    }
+
+    // Update the value of the variable win_number
+    public void UpdateWin()
+    {
+        win_number += 1;
+        Wins.text = death_number.ToString("F0");
     }
 
     // Check if the player has reached the finish of the map
