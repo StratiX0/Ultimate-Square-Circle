@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
 
     public bool Death()
     {
-        if (playerScript.inDeath)
+        if (playerScript.isDead)
         {
             return true;
         }

@@ -24,6 +24,8 @@ public class Player : MonoBehaviour
 
     public bool inFinish;
 
+    public bool isDead;
+
     public bool inDeath;
     
     private GameObject playerCamera;
@@ -79,7 +81,7 @@ public class Player : MonoBehaviour
         }
         if (other.gameObject.CompareTag("DeathTrigger"))
         {
-            inDeath = true;
+            isDead = true;
         }
     }
 
@@ -89,6 +91,10 @@ public class Player : MonoBehaviour
         {
             isJumping = false;
             isGrounded = true;
+        }
+        if (other.gameObject.CompareTag("DeathTrigger"))
+        {
+            isDead = true;
         }
     }
     
