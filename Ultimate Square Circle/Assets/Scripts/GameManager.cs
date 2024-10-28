@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.Properties;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -11,6 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject playerPrefab;
     private GameObject _player;
     public Player playerScript;
+    public GameObject spawnPoint;
     
     public static GameManager Instance;
     // Start is called before the first frame update
@@ -24,7 +22,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        _player = Instantiate(playerPrefab, new Vector3(0, -9.5f, 0), Quaternion.identity);
+        _player = Instantiate(playerPrefab, spawnPoint.transform.localPosition, Quaternion.identity);
         playerScript = _player.GetComponent<Player>();
         timeText = GameObject.Find("Time Value").GetComponent<TextMeshProUGUI>();
     }
