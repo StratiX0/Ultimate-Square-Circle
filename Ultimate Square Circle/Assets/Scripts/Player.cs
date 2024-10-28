@@ -67,6 +67,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    // Manage the input of the player to move
     void InputManager()
     {
         horInput = Input.GetAxis("Horizontal");
@@ -75,11 +76,11 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Finish"))
+        if (other.gameObject.CompareTag("Finish")) // The player have finished if he enters a trigger with a tag "Finish"
         {
             inFinish = true;
         }
-        if (other.gameObject.CompareTag("DeathTrigger"))
+        if (other.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he enters a trigger with a tag "DeathTrigger"
         {
             isDead = true;
         }
@@ -87,12 +88,12 @@ public class Player : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground"))
+        if (other.gameObject.CompareTag("Ground")) // The player can jump if he is in collision with an object of tag "Ground"
         {
             isJumping = false;
             isGrounded = true;
         }
-        if (other.gameObject.CompareTag("DeathTrigger"))
+        if (other.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he is in collision with an object of tag "DeathTrigger"
         {
             isDead = true;
         }

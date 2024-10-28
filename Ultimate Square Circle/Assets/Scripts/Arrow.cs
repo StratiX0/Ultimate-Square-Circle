@@ -16,6 +16,8 @@ public class Arrow : MonoBehaviour
     public float timeToDestroy = 5f;
     
     public float currentTime = 0;
+
+    public bool hasHitPlayer = false;
     
     // Start is called before the first frame update
     void Awake()
@@ -36,8 +38,8 @@ public class Arrow : MonoBehaviour
     void Update()
     {
         currentTime += Time.deltaTime;
-        
-        CheckDestroy();
+
+        CheckSelfDestruct();
     }
     
     private void MoveArrow()
@@ -51,10 +53,23 @@ public class Arrow : MonoBehaviour
             arrowRb.velocity = new Vector2(speed, 0);
         }
     }
-    
-    private void CheckDestroy()
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            hasHitPlayer = true;
+        }
+    }
+
+    private void CheckSelfDestruct()
     {
         if (currentTime >= timeToDestroy)
+        {
+            Destroy(gameObject);
+        }
+
+        if (hasHitPlayer)
         {
             Destroy(gameObject);
         }

@@ -1081,6 +1081,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 5770002854128509484, guid: 8879710a3f42c1843be49063182bdf66, type: 3}
   playerScript: {fileID: 0}
   spawnPoint: {fileID: 5444101434505787}
+  round: 0
 --- !u!4 &1906238284
 Transform:
   m_ObjectHideFlags: 0
