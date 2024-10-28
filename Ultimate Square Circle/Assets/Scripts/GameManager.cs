@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
         }
         CreatePlayer();
         timeText = GameObject.Find("Time Value").GetComponent<TextMeshProUGUI>();
-        Deaths = GameObject.Find("Death number").GetComponent<TextMeshProUGUI>();
+        Deaths = GameObject.Find("Deaths number").GetComponent<TextMeshProUGUI>();
         Wins = GameObject.Find("Wins number").GetComponent<TextMeshProUGUI>();
     }
     
@@ -101,13 +101,13 @@ public class GameManager : MonoBehaviour
     public void UpdateWin()
     {
         win_number += 1;
-        Wins.text = death_number.ToString("F0");
+        Wins.text = win_number.ToString("F0");
     }
 
     // Check if the player has reached the finish of the map
     public bool CheckFinish()
     {
-        if (playerScript.inFinish)
+        if (playerScript.hasFinished)
         {
             return true;
         }

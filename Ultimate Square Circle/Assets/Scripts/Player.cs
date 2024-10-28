@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     public bool isJumping;
 
-    public bool inFinish;
+    public bool hasFinished;
 
     public bool isDead;
 
@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerTransform = GetComponent<Transform>();
-        inFinish = false;
+        hasFinished = false;
     }
 
     // Update is called once per frame
@@ -78,7 +78,7 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Finish")) // The player have finished if he enters a trigger with a tag "Finish"
         {
-            inFinish = true;
+            hasFinished = true;
         }
         if (other.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he enters a trigger with a tag "DeathTrigger"
         {
