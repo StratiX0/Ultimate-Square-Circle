@@ -18,6 +18,7 @@ public class Arrow : MonoBehaviour
     public float currentTime = 0;
 
     public bool hasHitPlayer = false;
+    public bool shouldDestroy = false;
     
     // Start is called before the first frame update
     void Awake()
@@ -41,7 +42,20 @@ public class Arrow : MonoBehaviour
 
         CheckSelfDestruct();
     }
-    
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player")) // Check if the Player has been hit
+        {
+            hasHitPlayer = true;
+        }
+        if (other.gameObject.CompareTag("Ground")) // Check if the Player has been hit
+        {
+            shouldDestroy = true;
+        }
+    }
+
+    // Make the arrow move in a specific direction
     private void MoveArrow()
     {
         if (directionLeft)
@@ -54,22 +68,15 @@ public class Arrow : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            hasHitPlayer = true;
-        }
-    }
-
+    // Destroy the arrow if the conditions are met
     private void CheckSelfDestruct()
     {
-        if (currentTime >= timeToDestroy)
+        if (currentTime >= timeToDestroy) // Check if the arrow should be destroyed since its launched
         {
             Destroy(gameObject);
         }
 
-        if (hasHitPlayer)
+        if (hasHitPlayer || shouldDestroy) // Destroy itself if the Arrow has hit a Player
         {
             Destroy(gameObject);
         }

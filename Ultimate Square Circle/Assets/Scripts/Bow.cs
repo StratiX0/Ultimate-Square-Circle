@@ -14,6 +14,8 @@ public class Bow : MonoBehaviour
 
     public float timeToShoot = 0;
 
+    public Vector2 randomStartShooting;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -21,15 +23,11 @@ public class Bow : MonoBehaviour
         {
             Instance = this;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
     }
 
     void Start()
     {
-
+        timeToShoot = Random.Range(randomStartShooting.x, randomStartShooting.y);
     }
 
     // Update is called once per frame
@@ -40,11 +38,17 @@ public class Bow : MonoBehaviour
         Shoot();
     }
 
+    // Make the Bow Shoot an arrow from the bow position with the current direction
     private void Shoot()
     {
         if (timeToShoot >= shootInterval)
         {
-            Instantiate(arrowPrefab, transform.position, Quaternion.identity);
+            GameObject arrowObject = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
+            Arrow arrowComp = arrowObject.GetComponent<Arrow>();
+            arrowComp.directionLeft = directionLeft;
+            Transform arrowTransform = arrowObject.GetComponent<Transform>();
+            if (!directionLeft) arrowTransform.localScale = new Vector3(-arrowTransform.localScale.x, arrowTransform.localScale.y, arrowTransform.localScale.z);
+
             timeToShoot = 0;
         }
     }
