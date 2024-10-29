@@ -1,27 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bow : MonoBehaviour
 {
-    public static Bow Instance;
+    private static Bow _instance;
 
+    [Header("Arrow Properties")]
     public GameObject arrowPrefab;
 
+    [Header("Time Properties")]
     public float shootInterval = 1f;
-
-    public bool directionLeft = true;
-
-    public float timeToShoot = 0;
-
+    public float timeToShoot;
     public Vector2 randomStartShooting;
+
+    [Header("Direction Properties")]
+    public bool directionLeft = true;
 
     // Start is called before the first frame update
     void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
         }
     }
 

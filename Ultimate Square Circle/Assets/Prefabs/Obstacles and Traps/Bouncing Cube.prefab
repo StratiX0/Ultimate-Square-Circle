@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8922213584932517743}
   - component: {fileID: 2461452641131106997}
   - component: {fileID: 2965513452565065409}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Bouncing Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

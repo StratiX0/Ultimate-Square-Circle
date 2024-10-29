@@ -1,40 +1,31 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private static Player Instance;
-    private Rigidbody2D rb;
-    public Transform playerTransform;
-
-    public float speed;
-
-    public float jumpForce;
-
-    public float horInput;
-
-    public bool vertInput;
-
-    public bool isGrounded;
-
-    public bool isJumping;
-
-    public bool hasFinished;
-
-    public bool isDead;
-
-    public bool inDeath;
+    private static Player _instance;
+    private Rigidbody2D _rb;
     
-    private GameObject playerCamera;
+    [Header("Ground Properties")]
+    public Transform groundCheck;
+    public LayerMask groundMask;
+
+    [Header("Movement Properties")]
+    public float speed;
+    public float jumpForce;
+    
+    private float _horInput;
+    private bool _vertInputDown;
+    private bool _vertInputUp;
+    
+    [Header("Status Properties")]
+    public bool hasFinished;
+    public bool isDead;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
         }
         else
         {
@@ -45,8 +36,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        playerTransform = GetComponent<Transform>();
+        _rb = GetComponent<Rigidbody2D>();
         hasFinished = false;
     }
 
@@ -54,56 +44,54 @@ public class Player : MonoBehaviour
     void Update()
     {
         InputManager();
-    }
-
-    private void FixedUpdate()
-    {
-        rb.velocity = new Vector2(horInput * speed, rb.velocity.y);
-
-        if (vertInput && !isJumping && isGrounded)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            isJumping = true;
-        }
+        MovementManager();
     }
 
     // Manage the input of the player to move
     void InputManager()
     {
-        horInput = Input.GetAxis("Horizontal");
-        vertInput = Input.GetAxis("Vertical") > 0;
+        _horInput = Input.GetAxis("Horizontal");
+        _vertInputDown = Input.GetButtonDown("Jump");
+        _vertInputUp = Input.GetButtonUp("Jump");
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void MovementManager()
     {
-        if (other.gameObject.CompareTag("Finish")) // The player have finished if he enters a trigger with a tag "Finish"
-        {
-            hasFinished = true;
-        }
-        if (other.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he enters a trigger with a tag "DeathTrigger"
-        {
-            isDead = true;
-        }
-    }
+        _rb.velocity = new Vector2(_horInput * speed, _rb.velocity.y);
 
-    private void OnCollisionStay2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Ground")) // The player can jump if he is in collision with an object of tag "Ground"
+        if (_vertInputDown && IsGrounded())
         {
-            isJumping = false;
-            isGrounded = true;
+            _rb.velocity = new Vector2(_rb.velocity.x, jumpForce);
         }
-        if (other.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he is in collision with an object of tag "DeathTrigger"
+        
+        if (_vertInputUp && _rb.velocity.y > 0f)
         {
-            isDead = true;
+            _rb.velocity = new Vector2(_rb.velocity.x, _rb.velocity.y * 0.5f);
         }
     }
     
-    private void OnCollisionExit2D(Collision2D other)
+    private bool IsGrounded()
     {
-        if (other.gameObject.CompareTag("Ground"))
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundMask);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Finish")) // The player have finished if he enters a trigger with a tag "Finish"
         {
-            isGrounded = false;
+            hasFinished = true;
+        }
+        if (collision.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he enters a trigger with a tag "KillPlayer"
+        {
+            isDead = true;
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he is in collision with an object of tag "KillPlayer"
+        {
+            isDead = true;
         }
     }
 }

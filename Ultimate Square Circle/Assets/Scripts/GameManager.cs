@@ -3,23 +3,23 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private float time = 0;
-    private int death_number, win_number;
-    public TextMeshProUGUI timeText, Deaths, Wins;
+    private float _time;
+    private int _deathNumber, _winNumber;
+    public TextMeshProUGUI timeText, deaths, wins;
     [SerializeField] GameObject playerPrefab;
     private GameObject _player;
-    public Player playerScript;
+    private Player _playerScript;
     public GameObject spawnPoint;
-    public int round = 0;
+    public int round;
 
-    public static GameManager Instance;
+    private static GameManager _instance;
 
     // Start is called before the first frame update
     void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
         }
         else
         {
@@ -27,42 +27,37 @@ public class GameManager : MonoBehaviour
         }
         CreatePlayer();
         timeText = GameObject.Find("Time Value").GetComponent<TextMeshProUGUI>();
-        Deaths = GameObject.Find("Deaths number").GetComponent<TextMeshProUGUI>();
-        Wins = GameObject.Find("Wins number").GetComponent<TextMeshProUGUI>();
-    }
-    
-    void Start()
-    {
-        
+        deaths = GameObject.Find("Deaths number").GetComponent<TextMeshProUGUI>();
+        wins = GameObject.Find("Wins number").GetComponent<TextMeshProUGUI>();
     }
 
     // Update is called once per frame
     private void Update()
     {
-        // Update time count while the player is alive and have not reached the finish point 
+        // Update _time count while the player is alive and have not reached the finish point 
         if (!CheckDeath() && !CheckFinish())
         {
             UpdateTime();
         }
         
-        if (_player != null && CheckDeath())
+        if (CheckPlayerExists() && CheckDeath())
         {
             Destroy(_player);
         }
 
-        if (_player == null && CheckDeath())
+        if (!CheckPlayerExists() && CheckDeath())
         {
             CreatePlayer();
             ResetTime();
-            UpdateDN();
+            UpdateDn();
         }
 
-        if (_player != null && CheckFinish())
+        if (CheckPlayerExists() && CheckFinish())
         {
             Destroy(_player);
         }
 
-        if (_player == null && CheckFinish())
+        if (!CheckPlayerExists() && CheckFinish())
         {
             CreatePlayer();
             ResetTime();
@@ -74,53 +69,56 @@ public class GameManager : MonoBehaviour
     private void CreatePlayer()
     {
         _player = Instantiate(playerPrefab, spawnPoint.transform.localPosition, Quaternion.identity);
-        playerScript = _player.GetComponent<Player>();
+        _playerScript = _player.GetComponent<Player>();
     }
 
-    // Update the value of the variable time
-    public void UpdateTime()
+    private bool CheckPlayerExists()
     {
-        time += Time.deltaTime;
-        timeText.text = time.ToString("F2");
+        return _player != null;
     }
 
-    // Reset the value of the variable time
-    public void ResetTime()
+    // Update the value of the variable _time
+    private void UpdateTime()
     {
-        time = 0;
+        _time += Time.deltaTime;
+
+        int minutes = Mathf.FloorToInt(_time / 60F);
+        int seconds = Mathf.FloorToInt(_time % 60);
+        int centiseconds = Mathf.FloorToInt((_time * 100) % 100);
+
+        var format = $"{minutes:00}:{seconds:00}.{centiseconds:00}";
+        timeText.text = format;
     }
 
-    // Update the value of the variable death_number
-    public void UpdateDN()
+    // Reset the value of the variable _time
+    private void ResetTime()
     {
-        death_number += 1;
-        Deaths.text = death_number.ToString("F0");
+        _time = 0;
     }
 
-    // Update the value of the variable win_number
-    public void UpdateWin()
+    // Update the value of the variable _deathNumber
+    private void UpdateDn()
     {
-        win_number += 1;
-        Wins.text = win_number.ToString("F0");
+        _deathNumber += 1;
+        deaths.text = _deathNumber.ToString("F0");
+    }
+
+    // Update the value of the variable _winNumber
+    private void UpdateWin()
+    {
+        _winNumber += 1;
+        wins.text = _winNumber.ToString("F0");
     }
 
     // Check if the player has reached the finish of the map
-    public bool CheckFinish()
+    private bool CheckFinish()
     {
-        if (playerScript.hasFinished)
-        {
-            return true;
-        }
-        return false;
+        return (_playerScript.hasFinished);
     }
 
     // Check if the player is dead
-    public bool CheckDeath()
+    private bool CheckDeath()
     {
-        if (playerScript.isDead)
-        {
-            return true;
-        }
-        return false;
+        return (_playerScript.isDead);
     }
 }
