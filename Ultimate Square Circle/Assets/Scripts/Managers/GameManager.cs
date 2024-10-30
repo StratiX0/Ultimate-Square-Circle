@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -12,14 +13,16 @@ public class GameManager : MonoBehaviour
     public GameObject spawnPoint;
     public int round;
 
-    private static GameManager _instance;
-
+    public static GameManager instance;
+    public GameState gameState;
+    public static event Action<GameState> OnGameStateChanged;
+    
     // Start is called before the first frame update
     void Awake()
     {
-        if (_instance == null)
+        if (instance == null)
         {
-            _instance = this;
+            instance = this;
         }
         else
         {
@@ -29,6 +32,11 @@ public class GameManager : MonoBehaviour
         timeText = GameObject.Find("Time Value").GetComponent<TextMeshProUGUI>();
         deaths = GameObject.Find("Deaths number").GetComponent<TextMeshProUGUI>();
         wins = GameObject.Find("Wins number").GetComponent<TextMeshProUGUI>();
+    }
+
+    void Start()
+    {
+        ChangeState(GameState.CreateGrid);
     }
 
     // Update is called once per frame
@@ -121,4 +129,35 @@ public class GameManager : MonoBehaviour
     {
         return (_playerScript.isDead);
     }
+    
+    public void ChangeState(GameState newState)
+    {
+        gameState = newState;
+        switch (newState)
+        {
+            case GameState.Playing:
+                break;
+            case GameState.CreateGrid:
+                GridManager.instance.GenerateGrid();
+                break;
+            case GameState.SpawnPlatform:
+                PlatformManager.instance.SpawnPlatforms();
+                break;
+            case GameState.SpawnTrap:
+                PlatformManager.instance.SpawnTraps();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+        }
+        
+        OnGameStateChanged?.Invoke(newState);
+    }
+}
+
+public enum GameState
+{
+    Playing,
+    CreateGrid,
+    SpawnPlatform,
+    SpawnTrap
 }
