@@ -44,7 +44,7 @@ public class PlatformManager : MonoBehaviour
         
         if (GameManager.instance.gameState == GameState.PlaceObject && objectIsInPlacement && Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonDown(0)) ObjectPlacement();
+            ObjectPlacement();
         }
     }
 
