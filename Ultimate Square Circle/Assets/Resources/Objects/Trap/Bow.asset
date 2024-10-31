@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a740e31961df21a40b61026929d675e1, type: 3}
-  m_Name: Trap1
+  m_Name: Bow
   m_EditorClassIdentifier: 
   item: 1
-  objectPrefab: {fileID: 7934808045095320970, guid: 12d59890c53e33248b202e4a7aefd346, type: 3}
+  objectPrefab: {fileID: 6301647936647202227, guid: 9be62d3d72e7e4749925b09a4aa26892, type: 3}

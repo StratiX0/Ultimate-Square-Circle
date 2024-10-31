@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a740e31961df21a40b61026929d675e1, type: 3}
-  m_Name: Platform1
+  m_Name: Bouncing Cube
   m_EditorClassIdentifier: 
   item: 0
-  objectPrefab: {fileID: 3725869663630439879, guid: 7190f40870c31924fb631253b4c7a727, type: 3}
+  objectPrefab: {fileID: 5399453457912845684, guid: 5765f32f18849094a8ff3fc0cd054fcb, type: 3}

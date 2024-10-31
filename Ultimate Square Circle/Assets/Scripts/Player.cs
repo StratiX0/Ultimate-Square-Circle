@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
     [Header("Ground Properties")]
     public Transform groundCheck;
     public LayerMask groundMask;
+    public LayerMask killPlayerMask;
 
     [Header("Movement Properties")]
     public float speed;
@@ -81,7 +82,7 @@ public class Player : MonoBehaviour
         {
             hasFinished = true;
         }
-        if (collision.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he enters a trigger with a tag "KillPlayer"
+        if (killPlayerMask == (killPlayerMask | (1 << collision.gameObject.layer)))
         {
             isDead = true;
         }
@@ -89,7 +90,7 @@ public class Player : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("KillPlayer")) // The player is considered dead if he is in collision with an object of tag "KillPlayer"
+        if (killPlayerMask == (killPlayerMask | (1 << collision.gameObject.layer)))
         {
             isDead = true;
         }

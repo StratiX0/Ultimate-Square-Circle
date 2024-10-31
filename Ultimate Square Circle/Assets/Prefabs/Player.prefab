@@ -78,7 +78,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0.5332718, b: 1, a: 1}
   m_FlipX: 0
@@ -179,6 +179,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  killPlayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   speed: 10
   jumpForce: 7.5
   hasFinished: 0

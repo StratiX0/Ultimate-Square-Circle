@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        OnGameStateChanged += state => Debug.Log($"Game state changed to {state}");
         ChangeState(GameState.CreateGrid);
     }
 
@@ -140,6 +141,9 @@ public class GameManager : MonoBehaviour
             case GameState.CreateGrid:
                 GridManager.instance.GenerateGrid();
                 break;
+            case GameState.SelectObject:
+                PlatformManager.instance.ShowObjects();
+                break;
             case GameState.SpawnPlatform:
                 PlatformManager.instance.SpawnPlatforms();
                 break;
@@ -152,12 +156,18 @@ public class GameManager : MonoBehaviour
         
         OnGameStateChanged?.Invoke(newState);
     }
+    
+    private void OnValidate()
+    {
+        ChangeState(gameState);
+    }
 }
 
 public enum GameState
 {
     Playing,
     CreateGrid,
+    SelectObject,
     SpawnPlatform,
     SpawnTrap
 }

@@ -31,5 +31,6 @@ public class Tile : MonoBehaviour
         item.transform.position = transform.position;
         occupiedObject = item;
         item.occupiedTile = this;
+        item.isPlaced = true;
     }
 }

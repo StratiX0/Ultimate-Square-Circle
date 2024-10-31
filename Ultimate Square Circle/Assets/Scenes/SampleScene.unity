@@ -236,6 +236,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bow
       objectReference: {fileID: 0}
+    - target: {fileID: 4029299237138208822, guid: 9be62d3d72e7e4749925b09a4aa26892, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -912,6 +916,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Log Platform
       objectReference: {fileID: 0}
+    - target: {fileID: 2905251722323505475, guid: fafa13af136a8694f901beaab298dbaa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7831698388516267356, guid: fafa13af136a8694f901beaab298dbaa, type: 3}
       propertyPath: m_LocalPosition.x
       value: -10
@@ -1150,7 +1158,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.4528302, g: 0.3952018, b: 0.27127093, a: 0}
+  m_BackGroundColor: {r: 0.28261837, g: 0.650223, b: 0.6886792, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1175,7 +1183,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 20
+  orthographic size: 12.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1292,10 +1300,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cf14df445645174ea90f8ae26c3dbe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 16
-  height: 9
+  width: 70
+  height: 1
   tilePrefab: {fileID: 5952136901772815590, guid: ed36e89b7ba3fbe4b85f94b02d7588a3, type: 3}
-  cam: {fileID: 679345586}
+  gridObject: {fileID: 1792809543}
 --- !u!4 &811329768
 Transform:
   m_ObjectHideFlags: 0
@@ -1326,6 +1334,10 @@ PrefabInstance:
     - target: {fileID: 2905251722323505475, guid: 6142c45f3f27d5044922a16d11bd5557, type: 3}
       propertyPath: m_Name
       value: Icy Platform
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905251722323505475, guid: 6142c45f3f27d5044922a16d11bd5557, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7831698388516267356, guid: 6142c45f3f27d5044922a16d11bd5557, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1682,6 +1694,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Death Trigger
       objectReference: {fileID: 0}
+    - target: {fileID: 165027767796325567, guid: 04a4ec60f273f7f45a2a6b9e2a5dc2bc, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 165027767796325567, guid: 04a4ec60f273f7f45a2a6b9e2a5dc2bc, type: 3}
+      propertyPath: m_TagString
+      value: KillPlayer
+      objectReference: {fileID: 0}
     - target: {fileID: 2189444165178396927, guid: 04a4ec60f273f7f45a2a6b9e2a5dc2bc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1783,6 +1803,10 @@ PrefabInstance:
     - target: {fileID: 8517164930092043068, guid: 4f3b2ac8da163f743a59ff36268ddfab, type: 3}
       propertyPath: m_Name
       value: Big Crate Platform
+      objectReference: {fileID: 0}
+    - target: {fileID: 8517164930092043068, guid: 4f3b2ac8da163f743a59ff36268ddfab, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1970,11 +1994,46 @@ PrefabInstance:
       propertyPath: m_Name
       value: Death Platform
       objectReference: {fileID: 0}
+    - target: {fileID: 3859870086833575885, guid: 12d59890c53e33248b202e4a7aefd346, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 12d59890c53e33248b202e4a7aefd346, type: 3}
+--- !u!1 &1792809543
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1792809544}
+  m_Layer: 0
+  m_Name: Grid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1792809544
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1792809543}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -35, y: -15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1793386100 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7831698388516267356, guid: 6142c45f3f27d5044922a16d11bd5557, type: 3}
@@ -2077,6 +2136,10 @@ PrefabInstance:
     - target: {fileID: 4029299237138208822, guid: 9be62d3d72e7e4749925b09a4aa26892, type: 3}
       propertyPath: m_Name
       value: Bow (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4029299237138208822, guid: 9be62d3d72e7e4749925b09a4aa26892, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2186,6 +2249,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Small Crate Platform
       objectReference: {fileID: 0}
+    - target: {fileID: 8517164930092043068, guid: 08a05c41913f3dc488343258e848f86b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2202,6 +2269,10 @@ PrefabInstance:
     - target: {fileID: 7365235503433746863, guid: 5765f32f18849094a8ff3fc0cd054fcb, type: 3}
       propertyPath: m_Name
       value: Bouncing Cube
+      objectReference: {fileID: 0}
+    - target: {fileID: 7365235503433746863, guid: 5765f32f18849094a8ff3fc0cd054fcb, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7691435292818789667, guid: 5765f32f18849094a8ff3fc0cd054fcb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2399,7 +2470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2074496606
 Transform:
   m_ObjectHideFlags: 0
@@ -2499,5 +2570,6 @@ SceneRoots:
   - {fileID: 462402193}
   - {fileID: 1620416618}
   - {fileID: 1833202661}
+  - {fileID: 1792809544}
   - {fileID: 668488928}
   - {fileID: 522388764}

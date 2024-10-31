@@ -9,7 +9,7 @@ public class GridManager : MonoBehaviour
     
     [SerializeField] private int width, height;
     [SerializeField] private Tile tilePrefab;
-    [SerializeField] private Transform cam;
+    [SerializeField] private GameObject gridObject;
     
     private Dictionary<Vector2, Tile> _tiles;
 
@@ -25,7 +25,8 @@ public class GridManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                var spawnedTile = Instantiate(tilePrefab, new Vector3(x, y), Quaternion.identity);
+                Vector3 pos = gridObject.transform.position;
+                var spawnedTile = Instantiate(tilePrefab, new Vector3(x, y) + pos, Quaternion.identity, gridObject.transform);
                 spawnedTile.name = $"Tile ({x}, {y})";
                 
                 var isOffset = (x % 2 == 0 && y % 2 != 0) || (x % 2 != 0 && y % 2 == 0);
@@ -34,8 +35,6 @@ public class GridManager : MonoBehaviour
                 _tiles[new Vector2(x, y)] = spawnedTile;
             }
         }
-        
-        cam.transform.position = new Vector3(width / 2f, height / 2f - 0.5f, -10); 
         
         GameManager.instance.ChangeState(GameState.SpawnPlatform);
     }
