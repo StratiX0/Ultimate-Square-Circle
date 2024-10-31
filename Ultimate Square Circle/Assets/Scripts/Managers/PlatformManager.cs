@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,12 +14,38 @@ public class PlatformManager : MonoBehaviour
     [SerializeField] private Transform cam;
 
     public int itemsNbrToShow;
+
+    private List<BaseObject> objectsToPlace;
+    private int selectedObjectIndex;
+
+    [SerializeField] private bool inObjectSelection;
+    
+    private bool objectIsInPlacement;
+    
     
     private void Awake()
     {
         instance = this;
         
         _items = Resources.LoadAll<ScriptableItem>("Objects").ToList();
+    }
+
+    private void Start()
+    {
+        objectsToPlace = new List<BaseObject>();
+    }
+
+    private void Update()
+    {
+        if (GameManager.instance.gameState == GameState.SelectObject && inObjectSelection && Input.GetMouseButtonDown(0))
+        {
+            SelectRay();
+        }
+        
+        if (GameManager.instance.gameState == GameState.PlaceObject && objectIsInPlacement && Input.GetMouseButtonDown(0))
+        {
+            if (Input.GetMouseButtonDown(0)) ObjectPlacement();
+        }
     }
 
     public void SpawnPlatforms()
@@ -65,7 +93,7 @@ public class PlatformManager : MonoBehaviour
     public void ShowObjects()
     {
         List<Vector3> usedPositions = new List<Vector3>();
-
+        
         for (int i = 0; i < itemsNbrToShow; i++)
         {
             var randomItem = GetRandomItem2<BaseObject>(Item.Platform, Item.Trap);
@@ -81,8 +109,81 @@ public class PlatformManager : MonoBehaviour
 
             spawnedObject.transform.position = newPosition;
             usedPositions.Add(newPosition);
+            objectsToPlace.Add(spawnedObject);
         }
 
-        GameManager.instance.ChangeState(GameState.Playing);
+        GameManager.instance.ChangeState(GameState.SelectObject);
+    }
+    
+    public void SelectObject()
+    {
+        selectedObjectIndex = -1;
+        Cursor.visible = true;
+        inObjectSelection = true;
+    }
+
+    private void SelectRay()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+        if(hit.collider != null)
+        {
+            for (int i = 0; i < objectsToPlace.Count(); i++)
+            {
+                if (hit.collider.GetComponent<BaseObject>() == objectsToPlace[i])
+                {
+                    Debug.Log($"Object {objectsToPlace[i].gameObject.name} is selected");
+                    inObjectSelection = false;
+                    objectsToPlace[i].isSelectedToPlace = true;
+                    selectedObjectIndex = i;
+                    break;
+                }
+            }
+            
+        }
+        GameManager.instance.ChangeState(GameState.PlaceObject);
+    }
+
+    public void PlaceObject()
+    {
+        objectIsInPlacement = true;
+    }
+    
+    private void ObjectPlacement()
+    {
+        if (selectedObjectIndex < 0 || selectedObjectIndex >= objectsToPlace.Count)
+        {
+            Debug.LogError("selectedObjectIndex is out of range.");
+            return;
+        }
+
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+        if (hit.collider != null)
+        {
+            var tile = hit.collider.GetComponent<Tile>();
+            var obj = objectsToPlace[selectedObjectIndex].GetComponent<BaseObject>();
+
+            if (tile != null && obj != null && tile.Placeable && obj.isSelectedToPlace)
+            {
+                obj.transform.position = tile.transform.position;
+                obj.occupiedTile = tile;
+                obj.isPlaced = true;
+                obj.isSelectedToPlace = false;
+                tile.occupiedObject = obj;
+                objectsToPlace.RemoveAt(selectedObjectIndex);
+                selectedObjectIndex = -1;
+                objectIsInPlacement = false;
+                GameManager.instance.ChangeState(GameState.Playing);
+            }
+            else
+            {
+                Debug.LogError("Tile or object is null, or conditions not met.");
+            }
+        }
+        else
+        {
+            Debug.LogError("No collider hit.");
+        }
     }
 }

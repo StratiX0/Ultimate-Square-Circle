@@ -804,6 +804,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e522fa6a7653b02479b018ebe997f998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cam: {fileID: 679345586}
+  itemsNbrToShow: 2
+  inObjectSelection: 0
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1301,7 +1304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 70
-  height: 1
+  height: 25
   tilePrefab: {fileID: 5952136901772815590, guid: ed36e89b7ba3fbe4b85f94b02d7588a3, type: 3}
   gridObject: {fileID: 1792809543}
 --- !u!4 &811329768

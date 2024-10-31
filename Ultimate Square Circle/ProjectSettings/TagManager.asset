@@ -8,6 +8,7 @@ TagManager:
   - KillPlayer
   - Platform
   - Trap
+  - Tile
   layers:
   - Default
   - TransparentFX

@@ -141,8 +141,14 @@ public class GameManager : MonoBehaviour
             case GameState.CreateGrid:
                 GridManager.instance.GenerateGrid();
                 break;
-            case GameState.SelectObject:
+            case GameState.ShowObject:
                 PlatformManager.instance.ShowObjects();
+                break;
+            case GameState.SelectObject:
+                PlatformManager.instance.SelectObject();
+                break;
+            case GameState.PlaceObject:
+                PlatformManager.instance.PlaceObject();
                 break;
             case GameState.SpawnPlatform:
                 PlatformManager.instance.SpawnPlatforms();
@@ -167,7 +173,9 @@ public enum GameState
 {
     Playing,
     CreateGrid,
+    ShowObject,
     SelectObject,
+    PlaceObject,
     SpawnPlatform,
     SpawnTrap
 }
