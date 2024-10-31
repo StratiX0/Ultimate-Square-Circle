@@ -1,11 +1,14 @@
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
     private float _time;
     private int _deathNumber, _winNumber;
     public TextMeshProUGUI timeText, deaths, wins;
+    [SerializeField] GameObject death_image;
+    [SerializeField] GameObject win_image;
     [SerializeField] GameObject playerPrefab;
     private GameObject _player;
     private Player _playerScript;
@@ -40,28 +43,27 @@ public class GameManager : MonoBehaviour
             UpdateTime();
         }
         
-        if (CheckPlayerExists() && CheckDeath())
+        if (CheckPlayerExists() && CheckDeath() || CheckFinish())
         {
             Destroy(_player);
+
+            if (CheckDeath())
+            {
+                StartCoroutine(ShowDead());
+                UpdateDn();
+            }
+            else if (CheckFinish())
+            {
+                StartCoroutine(ShowWin());
+                UpdateWin();
+            }
+
         }
 
-        if (!CheckPlayerExists() && CheckDeath())
+        if (!CheckPlayerExists())
         {
             CreatePlayer();
             ResetTime();
-            UpdateDn();
-        }
-
-        if (CheckPlayerExists() && CheckFinish())
-        {
-            Destroy(_player);
-        }
-
-        if (!CheckPlayerExists() && CheckFinish())
-        {
-            CreatePlayer();
-            ResetTime();
-            UpdateWin();
         }
     }
 
@@ -120,5 +122,23 @@ public class GameManager : MonoBehaviour
     private bool CheckDeath()
     {
         return (_playerScript.isDead);
+    }
+
+    IEnumerator ShowDead()
+    {
+        death_image.SetActive(true); // Affiche l'image de "Game Over"
+        Time.timeScale = 0; // Met le jeu en pause
+        yield return new WaitForSecondsRealtime(1); // Attendre 3 secondes en temps réel
+        Time.timeScale = 1; // Reprendre le jeu
+        death_image.SetActive(false); // Cache l'image de "Game Over"
+    }
+
+    IEnumerator ShowWin()
+    {
+        win_image.SetActive(true); // Affiche l'image de "Game Over"
+        Time.timeScale = 0; // Met le jeu en pause
+        yield return new WaitForSecondsRealtime(1); // Attendre 3 secondes en temps réel
+        Time.timeScale = 1; // Reprendre le jeu
+        win_image.SetActive(false); // Cache l'image de "Game Over"
     }
 }
