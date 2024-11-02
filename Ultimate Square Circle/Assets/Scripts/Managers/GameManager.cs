@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
                 GridManager.instance.GenerateGrid();
                 break;
             case GameState.ShowObject:
-                PlatformManager.instance.ShowObjects();
+                PlatformManager.instance.SpawnObjects();
                 break;
             case GameState.SelectObject:
                 PlatformManager.instance.SelectObject();

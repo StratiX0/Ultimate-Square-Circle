@@ -90,7 +90,7 @@ public class PlatformManager : MonoBehaviour
         return (T)_items.Where(i => items.Contains(i.item)).OrderBy(o => Random.value).First().objectPrefab;
     }
     
-    public void ShowObjects()
+    public void SpawnObjects()
     {
         List<Vector3> usedPositions = new List<Vector3>();
         
@@ -104,7 +104,7 @@ public class PlatformManager : MonoBehaviour
 
             do
             {
-                newPosition = new Vector3(Random.Range(pos.x - size / 2, pos.x + size / 2), Random.Range(pos.y - size / 2, pos.y + size / 2), 0);
+                newPosition = new Vector3((int)Random.Range(pos.x - size / 2, pos.x + size / 2), (int)Random.Range(pos.y - size / 2, pos.y + size / 2), 0);
             } while (usedPositions.Any(p => Vector3.Distance(p, newPosition) < 2.0f));
 
             spawnedObject.transform.position = newPosition;
@@ -175,10 +175,6 @@ public class PlatformManager : MonoBehaviour
                 selectedObjectIndex = -1;
                 objectIsInPlacement = false;
                 GameManager.instance.ChangeState(GameState.Playing);
-            }
-            else
-            {
-                Debug.LogError("Tile or object is null, or conditions not met.");
             }
         }
         else
