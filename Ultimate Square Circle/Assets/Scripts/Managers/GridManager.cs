@@ -16,6 +16,7 @@ public class GridManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        GenerateGrid();
     }
     
     public void GenerateGrid()
@@ -32,11 +33,35 @@ public class GridManager : MonoBehaviour
                 var isOffset = (x % 2 == 0 && y % 2 != 0) || (x % 2 != 0 && y % 2 == 0);
                 spawnedTile.Init(isOffset);
                 
+                spawnedTile.gameObject.SetActive(false);
+                
                 _tiles[new Vector2(x, y)] = spawnedTile;
+            }
+        }
+    }
+    
+    public void ShowGrid()
+    {
+        if (_tiles != null)
+        {
+            foreach (var tile in _tiles)
+            {
+                tile.Value.gameObject.SetActive(true);
             }
         }
         
         GameManager.instance.ChangeState(GameState.SpawnPlatform);
+    }
+    
+    public void HideGrid()
+    {
+        if (_tiles != null)
+        {
+            foreach (var tile in _tiles)
+            {
+                tile.Value.gameObject.SetActive(false);
+            }
+        }
     }
     
     public Tile GetPlatformSpawnTile()

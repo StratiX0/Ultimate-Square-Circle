@@ -15,13 +15,9 @@ public class PlatformManager : MonoBehaviour
 
     public int itemsNbrToShow;
 
-    private List<BaseObject> objectsToPlace;
+    [SerializeField] private List<BaseObject> objectsToPlace;
     private int selectedObjectIndex;
-
     [SerializeField] private bool inObjectSelection;
-    
-    private bool objectIsInPlacement;
-    
     
     private void Awake()
     {
@@ -42,42 +38,10 @@ public class PlatformManager : MonoBehaviour
             SelectRay();
         }
         
-        if (GameManager.instance.gameState == GameState.PlaceObject && objectIsInPlacement && Input.GetMouseButtonDown(0))
+        if (GameManager.instance.gameState == GameState.PlaceObject && Input.GetMouseButtonDown(0))
         {
-            ObjectPlacement();
+            PlaceObject();
         }
-    }
-
-    public void SpawnPlatforms()
-    {
-        var platformCount = 1;
-        
-        for (int i = 0; i < platformCount; i++)
-        {
-            var randomItem = GetRandomItem<BasePlatform>(Item.Platform);
-            var spawnedObject = Instantiate(randomItem);
-            var randomSpawnTile = GridManager.instance.GetPlatformSpawnTile();
-            
-            randomSpawnTile.SetObject(spawnedObject);
-        }
-        
-        GameManager.instance.ChangeState(GameState.SpawnTrap);
-    }
-    
-    public void SpawnTraps()
-    {
-        var trapCount = 1;
-        
-        for (int i = 0; i < trapCount; i++)
-        {
-            var randomItem = GetRandomItem<BaseTrap>(Item.Trap);
-            var spawnedTrap = Instantiate(randomItem);
-            var randomSpawnTile = GridManager.instance.GetTrapSpawnTile();
-            
-            randomSpawnTile.SetObject(spawnedTrap);
-        }
-        
-        GameManager.instance.ChangeState(GameState.Playing);
     }
     
     private T GetRandomItem<T>(Item item) where T : BaseObject
@@ -106,12 +70,11 @@ public class PlatformManager : MonoBehaviour
             {
                 newPosition = new Vector3((int)Random.Range(pos.x - size / 2, pos.x + size / 2), (int)Random.Range(pos.y - size / 2, pos.y + size / 2), 0);
             } while (usedPositions.Any(p => Vector3.Distance(p, newPosition) < 2.0f));
-
             spawnedObject.transform.position = newPosition;
             usedPositions.Add(newPosition);
             objectsToPlace.Add(spawnedObject);
         }
-
+        
         GameManager.instance.ChangeState(GameState.SelectObject);
     }
     
@@ -133,23 +96,16 @@ public class PlatformManager : MonoBehaviour
                 if (hit.collider.GetComponent<BaseObject>() == objectsToPlace[i])
                 {
                     Debug.Log($"Object {objectsToPlace[i].gameObject.name} is selected");
-                    inObjectSelection = false;
                     objectsToPlace[i].isSelectedToPlace = true;
                     selectedObjectIndex = i;
+                    GameManager.instance.ChangeState(GameState.PlaceObject);
                     break;
                 }
             }
-            
         }
-        GameManager.instance.ChangeState(GameState.PlaceObject);
-    }
-
-    public void PlaceObject()
-    {
-        objectIsInPlacement = true;
     }
     
-    private void ObjectPlacement()
+    public void PlaceObject()
     {
         if (selectedObjectIndex < 0 || selectedObjectIndex >= objectsToPlace.Count)
         {
@@ -171,10 +127,16 @@ public class PlatformManager : MonoBehaviour
                 obj.isPlaced = true;
                 obj.isSelectedToPlace = false;
                 tile.occupiedObject = obj;
-                objectsToPlace.RemoveAt(selectedObjectIndex);
+                for (int i = 0; i < objectsToPlace.Count; i++)
+                {
+                    if (i != selectedObjectIndex)
+                    {
+                        Destroy(objectsToPlace[i].gameObject);
+                    }
+                }
+                objectsToPlace.Clear();
                 selectedObjectIndex = -1;
-                objectIsInPlacement = false;
-                GameManager.instance.ChangeState(GameState.Playing);
+                GameManager.instance.ChangeState(GameState.HideGrid);
             }
         }
         else

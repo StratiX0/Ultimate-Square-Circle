@@ -186,6 +186,8 @@ MonoBehaviour:
   jumpForce: 7.5
   hasFinished: 0
   isDead: 0
+  respawnPoint: {fileID: 0}
+  playerState: 0
 --- !u!1 &6759605587868805028
 GameObject:
   m_ObjectHideFlags: 0
