@@ -49,8 +49,6 @@ public class GridManager : MonoBehaviour
                 tile.Value.gameObject.SetActive(true);
             }
         }
-        
-        GameManager.instance.ChangeState(GameState.SpawnPlatform);
     }
     
     public void HideGrid()

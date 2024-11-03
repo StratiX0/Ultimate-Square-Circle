@@ -32,9 +32,12 @@ public class Bow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timeToShoot += Time.deltaTime;
+        if (GameManager.instance.gameState == GameState.Playing) // Shoot only when the game is playing
+        {
+            timeToShoot += Time.deltaTime;
 
-        Shoot();
+            Shoot();
+        }
     }
 
     // Make the Bow Shoot an arrow from the bow position with the current direction

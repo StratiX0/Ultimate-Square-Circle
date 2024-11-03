@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        OnGameStateChanged += state => Debug.Log($"Game state changed to {state}");
         CreatePlayer();
     }
 
@@ -62,38 +63,18 @@ public class GameManager : MonoBehaviour
         {
             case GameState.None:
                 break;
-            case GameState.Countdown:
-                ResetTime();
-                Color originalColor = countdownText.color;
-                countdownText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
-                countdownText.gameObject.SetActive(true);
-                countdownTime = countdownDefaultTime;
+            case GameState.Countdown: // Countdown before the game starts
+                ResetCountdown();
                 StartCoroutine(UpdateCountdown());
                 break;
-            case GameState.Playing:
+            case GameState.Playing: // The game is running
                 _playerScript.ChangeState(PlayerState.Alive);
                 StartCoroutine(FadeOutCountdownText());
                 break;
-            case GameState.ShowObject:
-                GridManager.instance.ShowGrid();
-                PlatformManager.instance.SpawnObjects();
+            case GameState.ObjectSystem: // Activate the platform system
                 _playerScript.ChangeState(PlayerState.Waiting);
-                break;
-            case GameState.SelectObject:
-                PlatformManager.instance.SelectObject();
-                break;
-            case GameState.PlaceObject:
-                PlatformManager.instance.PlaceObject();
-                break;
-            case GameState.HideGrid:
-                GridManager.instance.HideGrid();
-                ChangeState(GameState.Countdown);
-                _playerScript.ChangeState(PlayerState.Waiting);
-                break;
-            case GameState.SpawnPlatform:
-                // PlatformManager will manage itself
-                break;
-            case GameState.SpawnTrap:
+                ResetTime();
+                PlatformManager.instance.ChangeState(PlatformState.ShowObject);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -102,7 +83,7 @@ public class GameManager : MonoBehaviour
         OnGameStateChanged?.Invoke(newState);
     }
     
-    #region Player
+    #region Player Management
 
     [Header("Player Properties")]
     [SerializeField] private GameObject spawnPoint;
@@ -118,7 +99,7 @@ public class GameManager : MonoBehaviour
             case PlayerState.Spawn:
                 break;
             case PlayerState.Respawn:
-                ChangeState(GameState.ShowObject);
+                ChangeState(GameState.ObjectSystem);
                 break;
             case PlayerState.Waiting:
                 break;
@@ -167,6 +148,7 @@ public class GameManager : MonoBehaviour
         }
     }
     
+    // Update the value of the variable _countdownTime
     private IEnumerator UpdateCountdown()
     {
         while (countdownTime > 0)
@@ -181,6 +163,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(UpdateTimeCounter());
     }
     
+    // Fade out the countdown text
     private IEnumerator FadeOutCountdownText()
     {
         float duration = 2.0f;
@@ -199,24 +182,34 @@ public class GameManager : MonoBehaviour
         countdownText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
     }
 
-    // Reset the value of the variable _time
+    // Reset the value of the variable time
     private void ResetTime()
     {
         time = 0;
+        timeText.text = "00:00.00";
     }
 
-    // Update the value of the variable _deathNumber
+    // Update the value of the variable deathNumber
     private void UpdateDeathCount()
     {
         deathNumber += 1;
         deaths.text = deathNumber.ToString("F0");
     }
 
-    // Update the value of the variable _winNumber
+    // Update the value of the variable winNumber
     private void UpdateWin()
     {
         winNumber += 1;
         wins.text = winNumber.ToString("F0");
+    }
+
+    // Reset the value of the variable countdownTime
+    private void ResetCountdown()
+    {
+        Color originalColor = countdownText.color;
+        countdownText.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1);
+        countdownText.gameObject.SetActive(true);
+        countdownTime = countdownDefaultTime;
     }
 
     #endregion
@@ -227,10 +220,5 @@ public enum GameState
     None,
     Countdown,
     Playing,
-    ShowObject,
-    SelectObject,
-    PlaceObject,
-    HideGrid,
-    SpawnPlatform,
-    SpawnTrap
+    ObjectSystem,
 }

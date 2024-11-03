@@ -19,9 +19,14 @@ public class PlatformManager : MonoBehaviour
     private int selectedObjectIndex;
     [SerializeField] private bool inObjectSelection;
     
+    public PlatformState platformState;
+    public static event Action<PlatformState> OnPlatformStateChanged;
+    
     private void Awake()
     {
         instance = this;
+        
+        OnPlatformStateChanged += state => Debug.Log($"Platform state changed to {state}"); 
         
         _items = Resources.LoadAll<ScriptableItem>("Objects").ToList();
     }
@@ -33,12 +38,12 @@ public class PlatformManager : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.instance.gameState == GameState.SelectObject && inObjectSelection && Input.GetMouseButtonDown(0))
+        if (platformState == PlatformState.SelectObject && Input.GetMouseButtonDown(0))
         {
             SelectRay();
         }
         
-        if (GameManager.instance.gameState == GameState.PlaceObject && Input.GetMouseButtonDown(0))
+        if (platformState == PlatformState.PlaceObject && Input.GetMouseButtonDown(0))
         {
             PlaceObject();
         }
@@ -75,14 +80,13 @@ public class PlatformManager : MonoBehaviour
             objectsToPlace.Add(spawnedObject);
         }
         
-        GameManager.instance.ChangeState(GameState.SelectObject);
+        ChangeState(PlatformState.SelectObject);
     }
     
     public void SelectObject()
     {
         selectedObjectIndex = -1;
         Cursor.visible = true;
-        inObjectSelection = true;
     }
 
     private void SelectRay()
@@ -98,7 +102,7 @@ public class PlatformManager : MonoBehaviour
                     Debug.Log($"Object {objectsToPlace[i].gameObject.name} is selected");
                     objectsToPlace[i].isSelectedToPlace = true;
                     selectedObjectIndex = i;
-                    GameManager.instance.ChangeState(GameState.PlaceObject);
+                    ChangeState(PlatformState.PlaceObject);
                     break;
                 }
             }
@@ -136,7 +140,7 @@ public class PlatformManager : MonoBehaviour
                 }
                 objectsToPlace.Clear();
                 selectedObjectIndex = -1;
-                GameManager.instance.ChangeState(GameState.HideGrid);
+                ChangeState(PlatformState.End);
             }
         }
         else
@@ -144,4 +148,42 @@ public class PlatformManager : MonoBehaviour
             Debug.LogError("No collider hit.");
         }
     }
+    
+    public void ChangeState(PlatformState newState)
+    {
+        platformState = newState;
+        switch (newState)
+        {
+            case PlatformState.None: // Not doing anything related to the platforms
+                GridManager.instance.HideGrid();
+                break;
+            case PlatformState.ShowObject: // Show the object to place
+                GridManager.instance.ShowGrid();
+                SpawnObjects();
+                break;
+            case PlatformState.SelectObject: // Select the object to place
+                SelectObject();
+                break;
+            case PlatformState.PlaceObject: // Place the object on the grid
+                PlaceObject();
+                break;
+            case PlatformState.End: // End the platform phase
+                GameManager.instance.ChangeState(GameState.Countdown);
+                ChangeState(PlatformState.None);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+        }
+        
+        OnPlatformStateChanged?.Invoke(newState);
+    }
+}
+
+public enum PlatformState
+{
+    None,
+    ShowObject,
+    SelectObject,
+    PlaceObject,
+    End
 }
