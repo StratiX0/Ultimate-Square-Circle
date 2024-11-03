@@ -22,6 +22,7 @@ public class PlatformManager : MonoBehaviour
     public static event Action<PlatformState> OnPlatformStateChanged;
     
     [SerializeField] private GameObject objectBox;
+    [SerializeField] private GameObject parentObject;
     
     private void Awake()
     {
@@ -75,7 +76,7 @@ public class PlatformManager : MonoBehaviour
         for (int i = 0; i < itemsNbrToShow; i++)
         {
             var randomItem = GetRandomItem<BaseObject>(Item.Platform, Item.Trap);
-            var spawnedObject = Instantiate(randomItem);
+            var spawnedObject = Instantiate(randomItem, parentObject.transform);
             Vector3 newPosition;
 
             // Check if the position is already used
