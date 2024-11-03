@@ -106,7 +106,6 @@ public class GameManager : MonoBehaviour
             case PlayerState.Alive:
                 break;
             case PlayerState.Dead:
-                
                 UpdateDeathCount();
                 _playerScript.ChangeState(PlayerState.Respawn);
                 break;
