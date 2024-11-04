@@ -76,6 +76,9 @@ public class GameManager : MonoBehaviour
                 ResetTime();
                 PlatformManager.instance.ChangeState(PlatformState.ShowObject);
                 break;
+            case GameState.AiObjectSystem: // Activate the platform system for the AI
+                QLearningAgent.instance.PlaceTrap();
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
         }
@@ -220,4 +223,5 @@ public enum GameState
     Countdown,
     Playing,
     ObjectSystem,
+    AiObjectSystem
 }

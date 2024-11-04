@@ -46,7 +46,7 @@ public class Arrow : MonoBehaviour
         {
             hasHitPlayer = true;
         }
-        if (collision.gameObject.CompareTag("Ground")) // Check if the Player has been hit
+        if (!collision.gameObject.CompareTag("Trap")) // Check if the Arrow has hit something
         {
             shouldDestroy = true;
         }
@@ -61,7 +61,7 @@ public class Arrow : MonoBehaviour
     // Destroy the arrow if the conditions are met
     private void CheckSelfDestruct()
     {
-        if (currentTime >= timeToDestroy || hasHitPlayer || shouldDestroy) // Destroy itself if the Arrow has hit a Player or if the arrow should be destroyed since its launched
+        if (currentTime >= timeToDestroy || hasHitPlayer || shouldDestroy || Player.instance.playerState == PlayerState.Waiting) // Destroy itself if the Arrow has hit a Player or if the arrow should be destroyed since its launched
         {
             Destroy(gameObject);
         }

@@ -10,7 +10,7 @@ public class PlatformManager : MonoBehaviour
 
     private List<ScriptableItem> _items;
     
-    [SerializeField] private Transform cam;
+    [SerializeField] private GameObject cam;
 
     public int itemsNbrToShow;
 
@@ -48,7 +48,7 @@ public class PlatformManager : MonoBehaviour
         if (platformState == PlatformState.PlaceObject) // Place object
         {
             // Object follows the cursor
-            Vector2 posOnScreen = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 posOnScreen = cam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition);
             objectsToPlace[selectedObjectIndex].transform.position = new Vector3(posOnScreen.x + objectsToPlace[selectedObjectIndex].transform.localScale.x, posOnScreen.y + objectsToPlace[selectedObjectIndex].transform.localScale.y, 0);
             if (Input.GetMouseButtonDown(0))
             {
@@ -62,10 +62,25 @@ public class PlatformManager : MonoBehaviour
     //     return (T)_items.Where(i => i.item == item).OrderBy(o => Random.value).First().objectPrefab;
     // }
     
-    private T GetRandomItem<T>(params Item[] items) where T : BaseObject
+    public T GetRandomPlatform<T>(params Item[] items) where T : BasePlatform
     {
         return (T)_items.Where(i => items.Contains(i.item)).OrderBy(o => Random.value).First().objectPrefab;
     }
+    
+    public T GetRandomItem<T>(params Item[] items) where T : BaseObject
+    {
+        return (T)_items.Where(i => items.Contains(i.item)).OrderBy(o => Random.value).First().objectPrefab;
+    }
+
+    public T GetRandomTrap<T>(Item item) where T : BaseTrap
+    {
+        return (T)_items.Where(i => i.item == item).OrderBy(o => Random.value).First().objectPrefab;
+    }
+    
+    // public T GetRandomTrap<T>(params Item[] items) where T : BaseTrap
+    // {
+    //     return (T)_items.Where(i => items.Contains(i.item)).OrderBy(o => Random.value).First().objectPrefab;
+    // }
     
     // Spawn the objects to place
     private void SpawnObjects()
@@ -75,7 +90,7 @@ public class PlatformManager : MonoBehaviour
 
         for (int i = 0; i < itemsNbrToShow; i++)
         {
-            var randomItem = GetRandomItem<BaseObject>(Item.Platform, Item.Trap);
+            var randomItem = GetRandomPlatform<BasePlatform>(Item.Platform);
             var spawnedObject = Instantiate(randomItem, parentObject.transform);
             Vector3 newPosition;
 
@@ -85,7 +100,7 @@ public class PlatformManager : MonoBehaviour
                 newPosition = new Vector3(
                     Random.Range(boxBounds.min.x, boxBounds.max.x),
                     Random.Range(boxBounds.min.y, boxBounds.max.y),
-                    0
+                    -1
                 );
             } while (usedPositions.Any(p => Vector3.Distance(p, newPosition) < 2.0f));
 
@@ -107,7 +122,7 @@ public class PlatformManager : MonoBehaviour
     // Select the object to place
     private void SelectRay()
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero); // Raycast from the mouse position
+        RaycastHit2D hit = Physics2D.Raycast(cam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition), Vector2.zero); // Raycast from the mouse position
 
         if(hit.collider != null)
         {
@@ -132,6 +147,7 @@ public class PlatformManager : MonoBehaviour
                 }
             }
         }
+        Debug.Log(hit.collider.gameObject.name);
     }
     
     // Place the object on the grid
@@ -143,7 +159,7 @@ public class PlatformManager : MonoBehaviour
             return;
         }
 
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(cam.GetComponent<Camera>().ScreenToWorldPoint(Input.mousePosition), Vector3.zero);
 
         if (hit.collider != null)
         {
@@ -191,7 +207,7 @@ public class PlatformManager : MonoBehaviour
                 PlaceObject();
                 break;
             case PlatformState.End: // End the platform phase
-                GameManager.instance.ChangeState(GameState.Countdown);
+                GameManager.instance.ChangeState(GameState.AiObjectSystem);
                 ChangeState(PlatformState.None);
                 break;
             default:
