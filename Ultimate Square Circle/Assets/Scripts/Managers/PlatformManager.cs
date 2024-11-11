@@ -146,8 +146,8 @@ public class PlatformManager : MonoBehaviour
                     break;
                 }
             }
+            Debug.Log(hit.collider.gameObject.name);
         }
-        Debug.Log(hit.collider.gameObject.name);
     }
     
     // Place the object on the grid

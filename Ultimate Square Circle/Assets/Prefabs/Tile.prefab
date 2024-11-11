@@ -192,6 +192,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6997665684006288618}
   highlight: {fileID: 153859703125670050}
   isPlaceable: 1
+  spawnPoint: {fileID: 5247408504620889398, guid: 3589b0c968fb790429b46a335e4341ae, type: 3}
+  finishPoint: {fileID: 3522438691024689377, guid: 40b313a6740548148869255f6ed4c500, type: 3}
   occupiedObject: {fileID: 0}
 --- !u!61 &1967243591062077752
 BoxCollider2D:

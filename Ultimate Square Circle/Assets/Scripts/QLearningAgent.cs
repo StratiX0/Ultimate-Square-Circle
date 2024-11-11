@@ -11,10 +11,16 @@ public class QLearningAgent : MonoBehaviour
     [SerializeField] private float explorationRate = 1f;
     private int gridWidth;
     private int gridHeight;
+    [SerializeField] private Transform playerSpawnTransform;
+    [SerializeField] private Transform finishPointTransform;
+    [SerializeField] private List<GameObject> traps;
+    private HeatmapManager heatmap;
+    [SerializeField] private GameObject parentTrap;
 
     private void Awake()
     {
         instance = this;
+        heatmap = HeatmapManager.instance;
     }
 
     void Start()
@@ -44,7 +50,7 @@ public class QLearningAgent : MonoBehaviour
 
     public void PlaceTrap()
     {
-        (int, int) state = GetCurrentState();
+        (int, int, int) state = GetCurrentState();
         (int, int) action = ChooseAction(state);
         float reward = GetReward(action);
         UpdateQTable(state, action, reward);
@@ -52,13 +58,21 @@ public class QLearningAgent : MonoBehaviour
         GameManager.instance.ChangeState(GameState.Countdown);
     }
 
-    (int, int) GetCurrentState()
+    (int, int, int) GetCurrentState()
     {
-        Vector2 position = transform.position;
-        return ((int)position.x, (int)position.y);
+        Vector2 playerPosition = Player.instance.transform.position;
+
+        int playerGridX = Mathf.Clamp((int)(playerPosition.x - GridManager.instance.transform.position.x), 0, gridWidth - 1);
+        int playerGridY = Mathf.Clamp((int)(playerPosition.y - GridManager.instance.transform.position.y), 0, gridHeight - 1);
+
+        int heatValue = HeatmapManager.instance.GetHeatValue(playerGridX, playerGridY);
+
+        return (playerGridX, playerGridY, heatValue);
     }
 
-    (int, int) ChooseAction((int, int) state)
+
+
+    (int, int) ChooseAction((int, int, int) state)
     {
         if (UnityEngine.Random.value < explorationRate)
         {
@@ -66,8 +80,30 @@ public class QLearningAgent : MonoBehaviour
         }
         else
         {
-            return GetBestAction(state);
+            return GetBestActionBasedOnHeatmap(state);
         }
+    }
+
+    (int, int) GetBestActionBasedOnHeatmap((int, int, int) state)
+    {
+        float maxQValue = float.MinValue;
+        (int, int) bestAction = (0, 0);
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                int heatValue = HeatmapManager.instance.GetHeatValue(x, y);
+                float qValue = qTable[(state.Item1, state.Item2, x, y)] + heatValue * 2f;
+
+                if (qValue > maxQValue && GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable)
+                {
+                    maxQValue = qValue;
+                    bestAction = (x, y);
+                }
+            }
+        }
+        return bestAction;
     }
 
     (int, int) GetBestAction((int, int) state)
@@ -95,17 +131,34 @@ public class QLearningAgent : MonoBehaviour
         Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(action.Item1, action.Item2));
         if (tile != null && tile.Placeable)
         {
-            return 1.0f;
+            int heatValue = HeatmapManager.instance.GetHeatValue(action.Item1, action.Item2);
+            float baseReward = 1.0f;
+            return baseReward + heatValue * 0.2f;
         }
         return -1.0f;
     }
 
-    void UpdateQTable((int, int) state, (int, int) action, float reward)
+
+    public void UpdateQTable((int, int, int) state, (int, int) action, float reward)
     {
-        float oldQValue = qTable[(state.Item1, state.Item2, action.Item1, action.Item2)];
-        float bestNextQValue = GetBestQValue(action);
-        float newQValue = oldQValue + learningRate * (reward + discountFactor * bestNextQValue - oldQValue);
-        qTable[(state.Item1, state.Item2, action.Item1, action.Item2)] = newQValue;
+        var key = (state.Item1, state.Item2, action.Item1, action.Item2);
+    
+        if (qTable.ContainsKey(key))
+        {
+            float oldQValue = qTable[key];
+
+            float bestNextQValue = GetBestQValue(action);
+
+            float newQValue = oldQValue + learningRate * (reward + discountFactor * bestNextQValue - oldQValue);
+
+            qTable[key] = newQValue;
+        }
+        else
+        {
+            qTable[key] = reward;
+        }
+        
+        explorationRate = Mathf.Max(0.01f, explorationRate * 0.99f);
     }
 
     float GetBestQValue((int, int) state)
@@ -137,6 +190,7 @@ public class QLearningAgent : MonoBehaviour
                 var trap = Instantiate(randomItem, tile.transform.position, Quaternion.identity);
                 trap.occupiedTile = tile;
                 tile.occupiedObject = trap;
+                traps.Add(trap.gameObject);
             }
         }
     }

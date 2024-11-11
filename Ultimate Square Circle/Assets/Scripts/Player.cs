@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
 
     [Header("Status Properties")] 
     public bool canMove;
+    private HeatmapManager heatmapManager;
 
     
     [SerializeField] private Transform respawnPoint;
@@ -41,6 +42,7 @@ public class Player : MonoBehaviour
         respawnPoint = GameObject.Find("Spawn Point").transform;
         OnPlayerStateChanged += state => Debug.Log($"Player state changed to {state}");
         ChangeState(PlayerState.Spawn);
+        heatmapManager = HeatmapManager.instance;
     }
 
     // Start is called before the first frame update
@@ -56,6 +58,8 @@ public class Player : MonoBehaviour
         {
             InputManager();
             MovementManager();
+            
+            heatmapManager.IncrementHeatmap(transform.position);
         }
     }
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Tile : MonoBehaviour
@@ -6,10 +7,10 @@ public class Tile : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject highlight;
     [SerializeField] private bool isPlaceable;
-    
+
     public BaseObject occupiedObject;
-    public bool Placeable => isPlaceable && occupiedObject == null;
-    
+    public bool Placeable => isPlaceable && occupiedObject == null && !IsNearStartOrFinish();
+
     public void Init(bool isOffset)
     {
         spriteRenderer.color = isOffset ? offsetColor : baseColor;
@@ -19,7 +20,7 @@ public class Tile : MonoBehaviour
     {
         highlight.SetActive(true);
     }
-    
+
     private void OnMouseExit()
     {
         highlight.SetActive(false);
@@ -32,5 +33,18 @@ public class Tile : MonoBehaviour
         occupiedObject = item;
         item.occupiedTile = this;
         item.isPlaced = true;
+    }
+
+    private bool IsNearStartOrFinish()
+    {
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 2.0f);
+        foreach (var collider in colliders)
+        {
+            if (collider.GetComponent<BaseObject>() is BaseObject obj && (obj.CompareTag("Respawn") || obj.CompareTag("Finish")))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
