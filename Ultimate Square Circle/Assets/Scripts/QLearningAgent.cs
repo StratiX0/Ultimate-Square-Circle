@@ -70,8 +70,6 @@ public class QLearningAgent : MonoBehaviour
         return (playerGridX, playerGridY, heatValue);
     }
 
-
-
     (int, int) ChooseAction((int, int, int) state)
     {
         if (UnityEngine.Random.value < explorationRate)
@@ -96,7 +94,7 @@ public class QLearningAgent : MonoBehaviour
                 int heatValue = HeatmapManager.instance.GetHeatValue(x, y);
                 float qValue = qTable[(state.Item1, state.Item2, x, y)] + heatValue * 2f;
 
-                if (qValue > maxQValue && GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable)
+                if (qValue > maxQValue && GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable && !GetUnPlaceableTiles().Contains(new Vector2(x, y)))
                 {
                     maxQValue = qValue;
                     bestAction = (x, y);
@@ -104,6 +102,24 @@ public class QLearningAgent : MonoBehaviour
             }
         }
         return bestAction;
+    }
+    
+    List<Vector2> GetUnPlaceableTiles()
+    {
+        List<Vector2> unPlaceableTiles = new List<Vector2>();
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(x, y));
+                if (!tile.Placeable)
+                {
+                    unPlaceableTiles.Add(new Vector2(x, y));
+                }
+            }
+        }
+        
+        return unPlaceableTiles;
     }
 
     (int, int) GetBestAction((int, int) state)

@@ -40,7 +40,7 @@ public class Tile : MonoBehaviour
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 2.0f);
         foreach (var collider in colliders)
         {
-            if (collider.GetComponent<BaseObject>() is BaseObject obj && (obj.CompareTag("Respawn") || obj.CompareTag("Finish")))
+            if (collider.gameObject.CompareTag("Respawn") || collider.gameObject.CompareTag("Finish"))
             {
                 return true;
             }

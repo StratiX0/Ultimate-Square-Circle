@@ -40,9 +40,14 @@ public class PlatformManager : MonoBehaviour
 
     private void Update()
     {
-        if (platformState == PlatformState.SelectObject && Input.GetMouseButtonDown(0)) // Select object
+        if (platformState == PlatformState.SelectObject) // Select object
         {
-            SelectRay();
+            BlinkObject();
+            if (Input.GetMouseButtonDown(0))
+            {
+                SelectRay();
+                objectsToPlace[selectedObjectIndex].GetComponent<SpriteRenderer>().material.color = Color.white;
+            }
         }
         
         if (platformState == PlatformState.PlaceObject) // Place object
@@ -181,6 +186,16 @@ public class PlatformManager : MonoBehaviour
         else
         {
             Debug.LogError("No collider hit.");
+        }
+    }
+    
+    private void BlinkObject()
+    {
+        foreach (var platform in objectsToPlace)
+        {
+            Color color = platform.GetComponent<SpriteRenderer>().material.color;
+            color.a = Mathf.PingPong(Time.time, 1);
+            platform.GetComponent<SpriteRenderer>().material.color = color;
         }
     }
     
