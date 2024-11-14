@@ -16,6 +16,7 @@ public class Arrow : MonoBehaviour
     [Header("Status Properties")]
     public bool hasHitPlayer;
     public bool shouldDestroy;
+    public GameObject bow;
     
     // Start is called before the first frame update
     void Awake()
@@ -42,13 +43,9 @@ public class Arrow : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player")) // Check if the Player has been hit
+        if (collision.gameObject != bow) // Check if the Player has been hit
         {
             hasHitPlayer = true;
-        }
-        if (!collision.gameObject.CompareTag("Trap")) // Check if the Arrow has hit something
-        {
-            shouldDestroy = true;
         }
     }
 

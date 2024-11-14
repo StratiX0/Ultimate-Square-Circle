@@ -46,7 +46,6 @@ public class PlatformManager : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 SelectRay();
-                objectsToPlace[selectedObjectIndex].GetComponent<SpriteRenderer>().material.color = Color.white;
             }
         }
         
@@ -146,12 +145,11 @@ public class PlatformManager : MonoBehaviour
                             Destroy(objectsToPlace[j].gameObject);
                         }
                     }
-                    
+                    objectsToPlace[selectedObjectIndex].GetComponent<SpriteRenderer>().material.color = Color.white;
                     ChangeState(PlatformState.PlaceObject);
                     break;
                 }
             }
-            Debug.Log(hit.collider.gameObject.name);
         }
     }
     
@@ -168,6 +166,7 @@ public class PlatformManager : MonoBehaviour
 
         if (hit.collider != null)
         {
+            if (hit.collider.GetComponent<Tile>() == null) return;
             var tile = hit.collider.GetComponent<Tile>();
             var obj = objectsToPlace[selectedObjectIndex].GetComponent<BaseObject>();
 
@@ -182,10 +181,6 @@ public class PlatformManager : MonoBehaviour
                 selectedObjectIndex = -1;
                 ChangeState(PlatformState.End);
             }
-        }
-        else
-        {
-            Debug.LogError("No collider hit.");
         }
     }
     

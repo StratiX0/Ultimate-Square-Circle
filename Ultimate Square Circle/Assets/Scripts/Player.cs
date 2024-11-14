@@ -42,13 +42,13 @@ public class Player : MonoBehaviour
         respawnPoint = GameObject.Find("Spawn Point").transform;
         OnPlayerStateChanged += state => Debug.Log($"Player state changed to {state}");
         ChangeState(PlayerState.Spawn);
-        heatmapManager = HeatmapManager.instance;
     }
 
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        heatmapManager = HeatmapManager.instance;
     }
 
     // Update is called once per frame

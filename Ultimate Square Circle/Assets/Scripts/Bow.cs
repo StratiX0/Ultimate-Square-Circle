@@ -48,6 +48,7 @@ public class Bow : MonoBehaviour
             GameObject arrowObject = Instantiate(arrowPrefab, transform.position, Quaternion.identity);
             Arrow arrowComp = arrowObject.GetComponent<Arrow>();
             arrowComp.directionLeft = directionLeft;
+            arrowComp.bow = _instance.gameObject;
             Transform arrowTransform = arrowObject.GetComponent<Transform>();
             if (!directionLeft) arrowTransform.localScale = new Vector3(-arrowTransform.localScale.x, arrowTransform.localScale.y, arrowTransform.localScale.z);
 

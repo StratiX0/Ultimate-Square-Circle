@@ -20,7 +20,6 @@ public class QLearningAgent : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        heatmap = HeatmapManager.instance;
     }
 
     void Start()
@@ -28,6 +27,7 @@ public class QLearningAgent : MonoBehaviour
         gridWidth = GridManager.instance.width;
         gridHeight = GridManager.instance.height;
         qTable = new Dictionary<(int, int, int, int), float>();
+        heatmap = HeatmapManager.instance;
         InitializeQTable();
     }
 
@@ -51,12 +51,17 @@ public class QLearningAgent : MonoBehaviour
     public void PlaceTrap()
     {
         (int, int, int) state = GetCurrentState();
-        (int, int) action = ChooseAction(state);
-        float reward = GetReward(action);
-        UpdateQTable(state, action, reward);
-        PlaceTrapAt(action);
+
+        (int, int) bestAction = MonteCarloPlacement(state);
+
+        float reward = GetReward(bestAction);
+        UpdateQTable(state, bestAction, reward);
+
+        PlaceTrapAt(bestAction);
+
         GameManager.instance.ChangeState(GameState.Countdown);
     }
+
 
     (int, int, int) GetCurrentState()
     {
@@ -210,4 +215,53 @@ public class QLearningAgent : MonoBehaviour
             }
         }
     }
+    
+    (int, int) MonteCarloPlacement((int, int, int) state, int simulations = 10)
+    {
+        Dictionary<(int, int), float> positionRewards = new Dictionary<(int, int), float>();
+
+        for (int x = 0; x < gridWidth; x++)
+        {
+            for (int y = 0; y < gridHeight; y++)
+            {
+                if (!GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable) continue;
+
+                float totalReward = 0f;
+
+                for (int i = 0; i < simulations; i++)
+                {
+                    float reward = SimulateTrapPlacementReward(state, (x, y));
+                    totalReward += reward;
+                }
+
+                float averageReward = totalReward / simulations;
+                positionRewards[(x, y)] = averageReward;
+            }
+        }
+
+        (int, int) bestPosition = (0, 0);
+        float maxAverageReward = float.MinValue;
+        foreach (var position in positionRewards)
+        {
+            if (position.Value > maxAverageReward)
+            {
+                maxAverageReward = position.Value;
+                bestPosition = position.Key;
+            }
+        }
+
+        return bestPosition;
+    }
+    
+    float SimulateTrapPlacementReward((int, int, int) state, (int, int) action)
+    {
+        int heatValue = HeatmapManager.instance.GetHeatValue(action.Item1, action.Item2);
+        float simulatedReward = GetReward(action);
+
+        simulatedReward += heatValue * 0.2f;
+
+        return simulatedReward;
+    }
+
+
 }
