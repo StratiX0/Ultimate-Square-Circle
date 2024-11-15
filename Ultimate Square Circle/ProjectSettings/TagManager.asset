@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Ground
   - KillPlayer
+  - Platform
+  - Trap
+  - Tile
   layers:
   - Default
   - TransparentFX
@@ -14,7 +17,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
+  - KillPlayer
   - 
   - 
   - 

@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 1159580115678367106}
   - component: {fileID: 4755366503355833791}
   - component: {fileID: 5464965691930166827}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Arrow
-  m_TagString: KillPlayer
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: e57520e2e503c674d976784a58e66a92, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -176,5 +176,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   directionLeft: 1
   speed: 12.5
-  timeToDestroy: 5
   currentTime: 0
+  timeToDestroy: 5
+  hasHitPlayer: 0
+  shouldDestroy: 0
+  bow: {fileID: 4029299237138208822, guid: 9be62d3d72e7e4749925b09a4aa26892, type: 3}
