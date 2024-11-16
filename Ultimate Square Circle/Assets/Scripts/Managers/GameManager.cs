@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float countdownDefaultTime;
     [SerializeField] private int deathNumber;
     [SerializeField] private int winNumber;
+    [SerializeField] private bool lastRoundWin;
 
     private static event Action<GameState> OnGameStateChanged;
     
@@ -73,11 +74,11 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.ObjectSystem: // Activate the platform system
                 _playerScript.ChangeState(PlayerState.Waiting);
-                ResetTime();
                 PlatformManager.instance.ChangeState(PlatformState.ShowObject);
                 break;
             case GameState.AiObjectSystem: // Activate the platform system for the AI
-                QLearningAgent.instance.PlaceTrap();
+                QLearningAgent.instance.PlaceTrap(lastRoundWin, time);
+                ResetTime();
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
@@ -110,10 +111,12 @@ public class GameManager : MonoBehaviour
                 break;
             case PlayerState.Dead:
                 UpdateDeathCount();
+                lastRoundWin = false;
                 _playerScript.ChangeState(PlayerState.Respawn);
                 break;
             case PlayerState.Finished:
                 UpdateWin();
+                lastRoundWin = true;
                 _playerScript.ChangeState(PlayerState.Respawn);
                 break;
             default:

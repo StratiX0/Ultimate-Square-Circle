@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -4385442039518957723}
   - component: {fileID: 9082341777158612967}
   - component: {fileID: -8101951165479285040}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Icy Platform
   m_TagString: Trap
   m_Icon: {fileID: 0}

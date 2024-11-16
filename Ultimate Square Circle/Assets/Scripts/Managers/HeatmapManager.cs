@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class HeatmapManager : MonoBehaviour
 {
-    [SerializeField] private int width = 10;
-    [SerializeField] private int height = 10;
+    [SerializeField] private int width;
+    [SerializeField] private int height;
     private int[,] heatmap;
     public static HeatmapManager instance;
 
@@ -15,6 +15,8 @@ public class HeatmapManager : MonoBehaviour
     }
     void Start()
     {
+        width = GridManager.instance.width;
+        height = GridManager.instance.height;
         heatmap = new int[width, height];
     }
 

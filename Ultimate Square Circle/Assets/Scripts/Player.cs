@@ -9,11 +9,14 @@ public class Player : MonoBehaviour
     [Header("Ground Properties")]
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
+    [SerializeField] private LayerMask iceMask;
     [SerializeField] private LayerMask killPlayerMask;
 
     [Header("Movement Properties")]
-    public float speed;
-    public float jumpForce;
+    [SerializeField] private float speed;
+    [SerializeField] private float defaultSpeed;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float jumpForce;
     
     private float _horInput;
     private bool _vertInputDown;
@@ -49,6 +52,8 @@ public class Player : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         heatmapManager = HeatmapManager.instance;
+        speed = defaultSpeed;
+        maxSpeed = defaultSpeed * 2;
     }
 
     // Update is called once per frame
@@ -82,6 +87,7 @@ public class Player : MonoBehaviour
     // Manage the movement of the player
     void MovementManager()
     {
+        speed = IsOnIce() ? maxSpeed : defaultSpeed;
         _rb.velocity = new Vector2(_horInput * speed, _rb.velocity.y);
 
         if (_vertInputDown && IsGrounded())
@@ -98,7 +104,14 @@ public class Player : MonoBehaviour
     // Check if the player is grounded
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundMask);
+        bool value = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundMask);
+        if (!value) value = Physics2D.OverlapCircle(groundCheck.position, 0.2f, iceMask);
+        return value;
+    }
+    
+    private bool IsOnIce()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, iceMask);
     }
     
     private void OnTriggerEnter2D(Collider2D collision)
@@ -120,7 +133,7 @@ public class Player : MonoBehaviour
             instance.ChangeState(PlayerState.Dead);
         }
     }
-    
+
     // Change the state of the player
     public void ChangeState(PlayerState newState)
     {

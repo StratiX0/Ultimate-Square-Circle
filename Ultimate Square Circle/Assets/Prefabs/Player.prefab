@@ -179,10 +179,15 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  iceMask:
+    serializedVersion: 2
+    m_Bits: 256
   killPlayerMask:
     serializedVersion: 2
     m_Bits: 128
-  speed: 10
+  speed: 0
+  defaultSpeed: 10
+  maxSpeed: 0
   jumpForce: 7.5
   canMove: 0
   respawnPoint: {fileID: 0}

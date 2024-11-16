@@ -1438,8 +1438,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cf14df445645174ea90f8ae26c3dbe1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 57
-  height: 15
+  width: 54
+  height: 25
   tilePrefab: {fileID: 5952136901772815590, guid: ed36e89b7ba3fbe4b85f94b02d7588a3, type: 3}
   gridObject: {fileID: 1792809543}
 --- !u!4 &811329768
@@ -1473,6 +1473,7 @@ GameObject:
   - component: {fileID: 1019506626}
   - component: {fileID: 1019506625}
   - component: {fileID: 1019506627}
+  - component: {fileID: 1019506628}
   m_Layer: 0
   m_Name: Q-Learning Agent
   m_TagString: Untagged
@@ -1492,9 +1493,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae93df06c51ca3541b2cfb5c002645e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  learningRate: 0.1
+  learningRate: 5
   discountFactor: 0.9
   explorationRate: 1
+  simulations: 100
   playerSpawnTransform: {fileID: 5444101434505788}
   finishPointTransform: {fileID: 1603159462}
   traps: []
@@ -1507,8 +1509,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1019506624}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -25, y: -30, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -24, y: -32, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1526,8 +1528,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79248e9aaf3cfd74cb0ad368f68b680c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 57
-  height: 15
+  width: 55
+  height: 25
+--- !u!114 &1019506628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019506624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5d73d73b6de0b446bcc902675ea3afd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  successCount: 0
+  failureCount: 0
+  averageTimePerLevel: 0
 --- !u!1 &1139699113
 GameObject:
   m_ObjectHideFlags: 0
@@ -1831,7 +1848,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2189444165178396927, guid: 04a4ec60f273f7f45a2a6b9e2a5dc2bc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -40
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 2189444165178396927, guid: 04a4ec60f273f7f45a2a6b9e2a5dc2bc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2009,7 +2026,7 @@ Transform:
   m_GameObject: {fileID: 1792809543}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -25, y: -30, z: 1}
+  m_LocalPosition: {x: -24, y: -32, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2086,6 +2103,7 @@ MonoBehaviour:
   countdownDefaultTime: 3
   deathNumber: 0
   winNumber: 0
+  lastRoundWin: 0
   spawnPoint: {fileID: 5444101434505787}
   playerPrefab: {fileID: 5770002854128509484, guid: 8879710a3f42c1843be49063182bdf66, type: 3}
 --- !u!4 &1906238284

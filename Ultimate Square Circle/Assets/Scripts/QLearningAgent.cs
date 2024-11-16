@@ -9,12 +9,12 @@ public class QLearningAgent : MonoBehaviour
     [SerializeField] private float learningRate = 1f;
     [SerializeField] private float discountFactor = 0.9f;
     [SerializeField] private float explorationRate = 1f;
+    [SerializeField] private int simulations;
     private int gridWidth;
     private int gridHeight;
     [SerializeField] private Transform playerSpawnTransform;
     [SerializeField] private Transform finishPointTransform;
     [SerializeField] private List<GameObject> traps;
-    private HeatmapManager heatmap;
     [SerializeField] private GameObject parentTrap;
 
     private void Awake()
@@ -27,7 +27,6 @@ public class QLearningAgent : MonoBehaviour
         gridWidth = GridManager.instance.width;
         gridHeight = GridManager.instance.height;
         qTable = new Dictionary<(int, int, int, int), float>();
-        heatmap = HeatmapManager.instance;
         InitializeQTable();
     }
 
@@ -48,8 +47,10 @@ public class QLearningAgent : MonoBehaviour
         }
     }
 
-    public void PlaceTrap()
+    public void PlaceTrap(bool success, float timeTaken)
     {
+        EndOfLevel(success, timeTaken);
+        
         (int, int, int) state = GetCurrentState();
 
         (int, int) bestAction = MonteCarloPlacement(state);
@@ -127,26 +128,6 @@ public class QLearningAgent : MonoBehaviour
         return unPlaceableTiles;
     }
 
-    (int, int) GetBestAction((int, int) state)
-    {
-        float maxQValue = float.MinValue;
-        (int, int) bestAction = (0, 0);
-
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                if (qTable[(state.Item1, state.Item2, x, y)] > maxQValue)
-                {
-                    maxQValue = qTable[(state.Item1, state.Item2, x, y)];
-                    bestAction = (x, y);
-                }
-            }
-        }
-
-        return bestAction;
-    }
-
     float GetReward((int, int) action)
     {
         Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(action.Item1, action.Item2));
@@ -203,12 +184,12 @@ public class QLearningAgent : MonoBehaviour
     void PlaceTrapAt((int, int) position)
     {
         Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(position.Item1, position.Item2));
-        if (tile != null && tile.Placeable)
+        if (tile != null && !tile.IsOverlapped())
         {
             var randomItem = PlatformManager.instance.GetRandomTrap<BaseTrap>(Item.Trap);
             if (randomItem != null)
             {
-                var trap = Instantiate(randomItem, tile.transform.position, Quaternion.identity);
+                var trap = Instantiate(randomItem, tile.transform.position, Quaternion.identity, parentTrap.transform);
                 trap.occupiedTile = tile;
                 tile.occupiedObject = trap;
                 traps.Add(trap.gameObject);
@@ -216,7 +197,7 @@ public class QLearningAgent : MonoBehaviour
         }
     }
     
-    (int, int) MonteCarloPlacement((int, int, int) state, int simulations = 10)
+    (int, int) MonteCarloPlacement((int, int, int) state)
     {
         Dictionary<(int, int), float> positionRewards = new Dictionary<(int, int), float>();
 
@@ -263,5 +244,27 @@ public class QLearningAgent : MonoBehaviour
         return simulatedReward;
     }
 
+    void AdjustDifficulty()
+    {
+        if (PerformanceMetrics.instance.failureCount > PerformanceMetrics.instance.successCount)
+        {
+            // Ease difficulty
+            explorationRate = Mathf.Min(explorationRate + 0.1f, 1.0f);
+            discountFactor = Mathf.Max(discountFactor - 0.1f, 0.8f);
+            simulations = Mathf.Max(0, simulations - 10);
+        }
+        else if (PerformanceMetrics.instance.successCount > PerformanceMetrics.instance.failureCount + 2)
+        {
+            // Increase difficulty
+            explorationRate = Mathf.Max(explorationRate - 0.1f, 0.1f);
+            discountFactor = Mathf.Min(discountFactor + 0.1f, 0.99f);
+            simulations += 10;
+        }
+    }
 
+    public void EndOfLevel(bool success, float timeTaken)
+    {
+        PerformanceMetrics.instance.UpdateMetrics(success, timeTaken);
+        AdjustDifficulty();
+    }
 }
