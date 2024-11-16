@@ -9,7 +9,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private bool isPlaceable;
 
     public BaseObject occupiedObject;
-    public bool Placeable => isPlaceable && occupiedObject == null && !IsNearStartOrFinish();
+    public bool Placeable => isPlaceable && occupiedObject == null && !IsNearStartOrFinish() && !IsOverlapByTrap();
 
     public void Init(bool isOffset)
     {
@@ -41,6 +41,21 @@ public class Tile : MonoBehaviour
         foreach (var collider in colliders)
         {
             if (collider.gameObject.CompareTag("Respawn") || collider.gameObject.CompareTag("Finish"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private bool IsOverlapByTrap()
+    {
+        Collider2D[] colliders = new Collider2D[1];
+        Collider2D collider = GetComponent<Collider2D>();
+        int colliderCount = Physics2D.OverlapBox(collider.bounds.center, collider.bounds.size - new Vector3(0.1f, 0.1f, 0), 0f, new ContactFilter2D(), colliders);
+        for (int i = 0; i < colliderCount; i++)
+        {
+            if (colliders[i] != null && (colliders[i].gameObject.CompareTag("Trap") || colliders[i].gameObject.CompareTag("Platform")))
             {
                 return true;
             }

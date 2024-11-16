@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: c18802d38538a8944be2def301c7def6
+guid: 54b3adefb3ae8a143a902b45078be477
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7514678078973763014
-    second: you_win_0
+      213: -7997439479626426851
+    second: Bow 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: you_win_0
+      name: Bow 1_0
       rect:
         serializedVersion: 2
-        x: 464
-        y: 443
-        width: 2935
-        height: 1251
+        x: 0
+        y: 0
+        width: 164
+        height: 489
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -114,8 +114,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a32aa550a1086b790800000000000000
-      internalID: -7514678078973763014
+      spriteID: d169e206a23630190800000000000000
+      internalID: -7997439479626426851
       vertices: []
       indices: 
       edges: []
@@ -131,7 +131,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      you_win_0: -7514678078973763014
+      Bow 1_0: -7997439479626426851
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
