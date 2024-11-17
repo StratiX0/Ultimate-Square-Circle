@@ -170,17 +170,32 @@ public class PlatformManager : MonoBehaviour
             var tile = hit.collider.GetComponent<Tile>();
             var obj = objectsToPlace[selectedObjectIndex].GetComponent<BaseObject>();
 
-            if (tile != null && obj != null && tile.Placeable && obj.isSelectedToPlace)
+            if (obj.isEraser)
             {
-                obj.transform.position = tile.transform.position;
-                obj.occupiedTile = tile;
-                obj.isPlaced = true;
-                obj.isSelectedToPlace = false;
-                tile.occupiedObject = obj;
+                if (tile.occupiedObject != null)
+                {
+                    tile.occupiedObject = null;
+                    if (tile.objectOnTile.CompareTag("Trap")) QLearningAgent.instance.traps.Remove(tile.objectOnTile);
+                    Destroy(tile.objectOnTile);
+                }
+                
+                Destroy(obj.gameObject);
                 objectsToPlace.Clear();
                 selectedObjectIndex = -1;
                 ChangeState(PlatformState.End);
+                return;
             }
+
+            if (tile == null || obj == null || !tile.Placeable || !obj.isSelectedToPlace || obj.isEraser) return;
+            tile.objectOnTile = obj.gameObject;
+            obj.transform.position = tile.transform.position;
+            obj.occupiedTile = tile;
+            obj.isPlaced = true;
+            obj.isSelectedToPlace = false;
+            tile.occupiedObject = obj;
+            objectsToPlace.Clear();
+            selectedObjectIndex = -1;
+            ChangeState(PlatformState.End);
         }
     }
     

@@ -14,7 +14,7 @@ public class QLearningAgent : MonoBehaviour
     private int gridHeight;
     [SerializeField] private Transform playerSpawnTransform;
     [SerializeField] private Transform finishPointTransform;
-    [SerializeField] private List<GameObject> traps;
+    public List<GameObject> traps;
     [SerializeField] private GameObject parentTrap;
 
     private void Awake()
@@ -192,6 +192,7 @@ public class QLearningAgent : MonoBehaviour
                 var trap = Instantiate(randomItem, tile.transform.position, Quaternion.identity, parentTrap.transform);
                 trap.occupiedTile = tile;
                 tile.occupiedObject = trap;
+                tile.objectOnTile = trap.gameObject;
                 traps.Add(trap.gameObject);
             }
         }

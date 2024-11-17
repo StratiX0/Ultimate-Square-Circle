@@ -7,6 +7,7 @@ public class Tile : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject highlight;
     [SerializeField] private bool isPlaceable;
+    public GameObject objectOnTile;
 
     public BaseObject occupiedObject;
     public bool Placeable
