@@ -262,7 +262,7 @@ public class QLearningAgent : MonoBehaviour
         }
     }
 
-    public void EndOfLevel(bool success, float timeTaken)
+    private void EndOfLevel(bool success, float timeTaken)
     {
         PerformanceMetrics.instance.UpdateMetrics(success, timeTaken);
         AdjustDifficulty();

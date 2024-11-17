@@ -20,6 +20,11 @@ public class Tile : MonoBehaviour
         IsOverlapped();
     }
 
+    private void OnEnable()
+    {
+        IsOverlapped();
+    }
+
     public void Init(bool isOffset)
     {
         spriteRenderer.color = isOffset ? offsetColor : baseColor;
@@ -37,7 +42,7 @@ public class Tile : MonoBehaviour
 
     private bool IsNearStartOrFinish()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 3.0f);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.5f);
         foreach (var collider in colliders)
         {
             if (collider.gameObject.CompareTag("Respawn") || collider.gameObject.CompareTag("Finish"))
@@ -52,7 +57,7 @@ public class Tile : MonoBehaviour
     {
         Collider2D[] colliders = new Collider2D[1];
         Collider2D collider = GetComponent<Collider2D>();
-        int colliderCount = Physics2D.OverlapBox(collider.bounds.center, collider.bounds.size - new Vector3(0.1f, 0.1f, 0), 0f, new ContactFilter2D(), colliders);
+        int colliderCount = Physics2D.OverlapBox(collider.bounds.center, collider.bounds.size - new Vector3(0.2f, 0.2f, 0), 0f, new ContactFilter2D(), colliders);
         for (int i = 0; i < colliderCount; i++)
         {
             if (colliders[i] != null && (colliders[i].gameObject.CompareTag("Trap") || colliders[i].gameObject.CompareTag("Platform") || colliders[i].gameObject.CompareTag("Ground")))
