@@ -485,7 +485,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1111585435}
         m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: ChangeScene
+        m_MethodName: ChangeScenePlay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -872,7 +872,7 @@ GameObject:
   m_Component:
   - component: {fileID: 631769453}
   - component: {fileID: 631769454}
-  - component: {fileID: 631769455}
+  - component: {fileID: 631769456}
   m_Layer: 5
   m_Name: sound
   m_TagString: Untagged
@@ -996,7 +996,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &631769455
+--- !u!114 &631769456
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1005,9 +1005,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 631769452}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6351b4fa8c214324697c3a51ad606aff, type: 3}
+  m_Script: {fileID: 11500000, guid: e97f3e0d300ed8e4ea1c196ff3669330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundSlider: {fileID: 1505422722}
+  textMeshPro: {fileID: 1237506275}
 --- !u!1 &793852502
 GameObject:
   m_ObjectHideFlags: 0
@@ -2482,7 +2484,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1505422720}
   - component: {fileID: 1505422722}
-  - component: {fileID: 1505422721}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -2512,20 +2513,6 @@ RectTransform:
   m_AnchoredPosition: {x: 10, y: -37}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1505422721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1505422719}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e97f3e0d300ed8e4ea1c196ff3669330, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  soundSlider: {fileID: 1505422722}
-  textMeshPro: {fileID: 1237506275}
 --- !u!114 &1505422722
 MonoBehaviour:
   m_ObjectHideFlags: 0
