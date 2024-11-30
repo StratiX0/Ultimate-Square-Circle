@@ -5,13 +5,36 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public void ChangeScene()
+    public void ChangeScenePlay()
     {
-        SceneManager.LoadScene(1);
+        StartCoroutine(waitToChangePlay());
     }
+
+    public void ChangeSceneMenu()
+    {
+        StartCoroutine(waitToChangeMenu());
+    }
+
 
     public void Quit_Game()
     {
         Application.Quit();
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+    }
+
+    IEnumerator waitToChangePlay()
+    {
+        yield return new WaitForSeconds(0.25f);
+        SceneManager.LoadScene(1);
+    }
+
+    IEnumerator waitToChangeMenu()
+    {
+        yield return new WaitForSeconds(0.25f);
+        SceneManager.LoadScene(0);
     }
 }
