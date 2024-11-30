@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f77e87bb81537494fb573b6070deb010
+guid: e0497fd1e92cc05429166eaf2c4d323f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5593030405192582669
-    second: Eraser_0
+      213: 4089333348509385759
+    second: icon_outline_cross_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Eraser_0
+      name: icon_outline_cross_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 32
-        height: 32
+        width: 36
+        height: 36
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -114,8 +114,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d068677358f6e9d40800000000000000
-      internalID: 5593030405192582669
+      spriteID: f148f06a30b30c830800000000000000
+      internalID: 4089333348509385759
       vertices: []
       indices: 
       edges: []
@@ -130,8 +130,7 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Eraser_0: 5593030405192582669
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
