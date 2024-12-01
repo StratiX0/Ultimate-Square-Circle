@@ -30,6 +30,7 @@ public class QLearningAgent : MonoBehaviour
         InitializeQTable();
     }
 
+    // Initialize Q-Table with zeros
     void InitializeQTable()
     {
         for (int x = 0; x < gridWidth; x++)
@@ -47,6 +48,7 @@ public class QLearningAgent : MonoBehaviour
         }
     }
 
+    // Place trap at the best position
     public void PlaceTrap(bool success, float timeTaken)
     {
         EndOfLevel(success, timeTaken);
@@ -64,6 +66,7 @@ public class QLearningAgent : MonoBehaviour
     }
 
 
+    // Get current state of the player
     (int, int, int) GetCurrentState()
     {
         Vector2 playerPosition = Player.instance.transform.position;
@@ -76,58 +79,7 @@ public class QLearningAgent : MonoBehaviour
         return (playerGridX, playerGridY, heatValue);
     }
 
-    (int, int) ChooseAction((int, int, int) state)
-    {
-        if (UnityEngine.Random.value < explorationRate)
-        {
-            return (UnityEngine.Random.Range(0, gridWidth), UnityEngine.Random.Range(0, gridHeight));
-        }
-        else
-        {
-            return GetBestActionBasedOnHeatmap(state);
-        }
-    }
-
-    (int, int) GetBestActionBasedOnHeatmap((int, int, int) state)
-    {
-        float maxQValue = float.MinValue;
-        (int, int) bestAction = (0, 0);
-
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                int heatValue = HeatmapManager.instance.GetHeatValue(x, y);
-                float qValue = qTable[(state.Item1, state.Item2, x, y)] + heatValue * 2f;
-
-                if (qValue > maxQValue && GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable && !GetUnPlaceableTiles().Contains(new Vector2(x, y)))
-                {
-                    maxQValue = qValue;
-                    bestAction = (x, y);
-                }
-            }
-        }
-        return bestAction;
-    }
-    
-    List<Vector2> GetUnPlaceableTiles()
-    {
-        List<Vector2> unPlaceableTiles = new List<Vector2>();
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(x, y));
-                if (!tile.Placeable)
-                {
-                    unPlaceableTiles.Add(new Vector2(x, y));
-                }
-            }
-        }
-        
-        return unPlaceableTiles;
-    }
-
+    // Get reward for the action
     float GetReward((int, int) action)
     {
         Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(action.Item1, action.Item2));
@@ -139,19 +91,19 @@ public class QLearningAgent : MonoBehaviour
         }
         return -1.0f;
     }
-
-
+    
+    // Update Q-Table
     public void UpdateQTable((int, int, int) state, (int, int) action, float reward)
     {
         var key = (state.Item1, state.Item2, action.Item1, action.Item2);
     
-        if (qTable.ContainsKey(key))
+        if (qTable.ContainsKey(key)) // Check if the state-action pair exists in the Q-Table
         {
-            float oldQValue = qTable[key];
+            float oldQValue = qTable[key]; // Get old Q-Value
 
-            float bestNextQValue = GetBestQValue(action);
+            float bestNextQValue = GetBestQValue(action); // Get best Q-Value for the next state
 
-            float newQValue = oldQValue + learningRate * (reward + discountFactor * bestNextQValue - oldQValue);
+            float newQValue = oldQValue + learningRate * (reward + discountFactor * bestNextQValue - oldQValue); // Update Q-Value
 
             qTable[key] = newQValue;
         }
@@ -160,9 +112,10 @@ public class QLearningAgent : MonoBehaviour
             qTable[key] = reward;
         }
         
-        explorationRate = Mathf.Max(0.01f, explorationRate * 0.99f);
+        explorationRate = Mathf.Max(0.01f, explorationRate * 0.99f); // Decay exploration rate
     }
 
+    // Get best Q-Value for the given state
     float GetBestQValue((int, int) state)
     {
         float maxQValue = float.MinValue;
@@ -173,7 +126,7 @@ public class QLearningAgent : MonoBehaviour
             {
                 if (qTable[(state.Item1, state.Item2, x, y)] > maxQValue)
                 {
-                    maxQValue = qTable[(state.Item1, state.Item2, x, y)];
+                    maxQValue = qTable[(state.Item1, state.Item2, x, y)]; // Update max Q-Value
                 }
             }
         }
@@ -181,13 +134,14 @@ public class QLearningAgent : MonoBehaviour
         return maxQValue;
     }
 
+    // Place trap at the given position
     void PlaceTrapAt((int, int) position)
     {
         Tile tile = GridManager.instance.GetTileAtPosition(new Vector2(position.Item1, position.Item2));
-        if (tile != null && !tile.IsOverlapped())
+        if (tile != null && !tile.IsOverlapped()) // Check if the tile is not occupied
         {
             var randomItem = PlatformManager.instance.GetRandomTrap<BaseTrap>(Item.Trap);
-            if (randomItem != null)
+            if (randomItem != null) // Check if the random item is not null
             {
                 var trap = Instantiate(randomItem, tile.transform.position, Quaternion.identity, parentTrap.transform);
                 trap.occupiedTile = tile;
@@ -198,6 +152,7 @@ public class QLearningAgent : MonoBehaviour
         }
     }
     
+    // Monte Carlo Tree Search for trap placement
     (int, int) MonteCarloPlacement((int, int, int) state)
     {
         Dictionary<(int, int), float> positionRewards = new Dictionary<(int, int), float>();
@@ -206,11 +161,11 @@ public class QLearningAgent : MonoBehaviour
         {
             for (int y = 0; y < gridHeight; y++)
             {
-                if (!GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable) continue;
+                if (!GridManager.instance.GetTileAtPosition(new Vector2(x, y)).Placeable) continue; // Check if the tile is placeable
 
                 float totalReward = 0f;
 
-                for (int i = 0; i < simulations; i++)
+                for (int i = 0; i < simulations; i++) // Simulate trap placement for the given number of simulations
                 {
                     float reward = SimulateTrapPlacementReward(state, (x, y));
                     totalReward += reward;
@@ -223,7 +178,7 @@ public class QLearningAgent : MonoBehaviour
 
         (int, int) bestPosition = (0, 0);
         float maxAverageReward = float.MinValue;
-        foreach (var position in positionRewards)
+        foreach (var position in positionRewards) // Get the best position with the highest average reward
         {
             if (position.Value > maxAverageReward)
             {
@@ -232,9 +187,10 @@ public class QLearningAgent : MonoBehaviour
             }
         }
 
-        return bestPosition;
+        return bestPosition; // Return the best position
     }
     
+    // Simulate trap placement reward
     float SimulateTrapPlacementReward((int, int, int) state, (int, int) action)
     {
         int heatValue = HeatmapManager.instance.GetHeatValue(action.Item1, action.Item2);
@@ -244,21 +200,22 @@ public class QLearningAgent : MonoBehaviour
 
         return simulatedReward;
     }
-
+    
+    // Adjust difficulty based on performance
     void AdjustDifficulty()
     {
         if (PerformanceMetrics.instance.failureCount > PerformanceMetrics.instance.successCount)
         {
             // Ease difficulty
-            explorationRate = Mathf.Min(explorationRate + 0.1f, 1.0f);
-            discountFactor = Mathf.Max(discountFactor - 0.1f, 0.8f);
+            explorationRate = Mathf.Min(explorationRate + 0.3f, 1.0f);
+            discountFactor = Mathf.Max(discountFactor - 0.3f, 0.8f);
             simulations = Mathf.Max(0, simulations - 10);
         }
         else if (PerformanceMetrics.instance.successCount > PerformanceMetrics.instance.failureCount + 2)
         {
             // Increase difficulty
-            explorationRate = Mathf.Max(explorationRate - 0.1f, 0.1f);
-            discountFactor = Mathf.Min(discountFactor + 0.1f, 0.99f);
+            explorationRate = Mathf.Max(explorationRate - 0.3f, 0.1f);
+            discountFactor = Mathf.Min(discountFactor + 0.3f, 0.99f);
             simulations += 10;
         }
     }
