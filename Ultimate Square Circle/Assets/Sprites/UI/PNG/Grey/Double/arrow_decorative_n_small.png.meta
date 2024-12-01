@@ -130,7 +130,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      arrow_decorative_n_small_0: -8889144318144374843
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
