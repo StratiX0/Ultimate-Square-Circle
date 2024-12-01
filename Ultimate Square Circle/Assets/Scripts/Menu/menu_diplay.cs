@@ -20,6 +20,7 @@ public class menu_diplay : MonoBehaviour
         {
             _menu.SetActive(true);
             Time.timeScale = 0f;
+            Cursor.visible = true;
         }
     }
 }

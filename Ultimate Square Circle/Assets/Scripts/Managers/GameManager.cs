@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.Countdown);
         countdownTime = countdownDefaultTime;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame

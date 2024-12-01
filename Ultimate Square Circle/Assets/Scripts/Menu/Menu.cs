@@ -24,6 +24,7 @@ public class Menu : MonoBehaviour
     public void Resume()
     {
         Time.timeScale = 1f;
+        if (GameManager.instance.gameState != GameState.ObjectSystem) Cursor.visible = false;
     }
 
     IEnumerator waitToChangePlay()
@@ -36,5 +37,6 @@ public class Menu : MonoBehaviour
     {
         yield return new WaitForSeconds(0.25f);
         SceneManager.LoadScene(0);
+        Cursor.visible = true;
     }
 }
