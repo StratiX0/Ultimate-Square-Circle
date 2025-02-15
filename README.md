@@ -8,4 +8,4 @@ Fait sur Unity.
 
 Version : **2023.2.20f1**
 
-[Télecharger]([https://www.mistral.ai](https://github.com/StratiX0/Ultimate-Square-Circle/releases/tag/Release))
+[Télécharger](https://github.com/StratiX0/Ultimate-Square-Circle/releases/tag/Release)
